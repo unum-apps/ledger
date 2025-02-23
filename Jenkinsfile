@@ -105,7 +105,7 @@ pipeline {
         }
         stage('push') {
             when {
-                buildingTag()
+                tag "*.*.*"
             }
             parallel {
                 stage('api') {
