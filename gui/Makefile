@@ -13,5 +13,5 @@ shell:
 
 image: build
 
-push:
+push: image
 	docker push $(ACCOUNT)/$(IMAGE):$(VERSION)
