@@ -1,6 +1,7 @@
 ACCOUNT?=$(shell cat ../ACCOUNT)
 IMAGE=unum-apps-ledger-api
 VERSION?=dev
+SEMVER=?=$(VERSION)
 NETWORK?=$(VERSION)-ledger.io
 MYSQL_IMAGE=mysql/mysql-server:5.7
 MYSQL_HOST=$(IMAGE)-mysql
@@ -19,7 +20,7 @@ ENVIRONMENT=-e MYSQL_HOST=$(MYSQL_HOST) \
 			-e test="python -m unittest -v" \
 			-e debug="python -m ptvsd --host 0.0.0.0 --port 5678 --wait -m unittest -v"
 
-.PHONY: build cleanup network mysql shell debug test lint ddl image push
+.PHONY: build cleanup network mysql shell debug test lint ddl image push semver
 
 build:
 	mkdir -p ddl
@@ -56,3 +57,10 @@ image: build
 
 push: image
 	docker push $(ACCOUNT)/$(IMAGE):$(VERSION)
+
+push: semver
+
+semver:
+	docker pull $(ACCOUNT)/$(IMAGE):$(VERSION)
+	docker tag $(ACCOUNT)/$(IMAGE):$(VERSION) $(ACCOUNT)/$(IMAGE):$(SEMVER)
+	docker push $(ACCOUNT)/$(IMAGE):$(SEMVER)

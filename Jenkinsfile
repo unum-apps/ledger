@@ -105,35 +105,44 @@ pipeline {
         }
         stage('push') {
             when {
-                tag "*.*.*"
+                branch 'main'
             }
-            parallel {
-                stage('api') {
-                    steps {
-                        dir('api') {
-                            sh 'make push -e VERSION=${TAG_NAME}'
+            stages {
+                stage('hash') {
+                    parallel {
+                        stage('api') {
+                            steps {
+                                dir('api') {
+                                    sh 'make push -e VERSION=${VERSION}'
+                                }
+                            }
+                        }
+                        stage('daemon') {
+                            steps {
+                                dir('daemon') {
+                                    sh 'make push -e VERSION=${VERSION}'
+                                }
+                            }
+                        }
+                        stage('cron') {
+                            steps {
+                                dir('cron') {
+                                    sh 'make push -e VERSION=${VERSION}'
+                                }
+                            }
+                        }
+                        stage('gui') {
+                            steps {
+                                dir('gui') {
+                                    sh 'make push -e VERSION=${VERSION}'
+                                }
+                            }
                         }
                     }
                 }
-                stage('daemon') {
+                stage('semver') {
                     steps {
-                        dir('daemon') {
-                            sh 'make push -e VERSION=${TAG_NAME}'
-                        }
-                    }
-                }
-                stage('cron') {
-                    steps {
-                        dir('cron') {
-                            sh 'make push -e VERSION=${TAG_NAME}'
-                        }
-                    }
-                }
-                stage('gui') {
-                    steps {
-                        dir('gui') {
-                            sh 'make push -e VERSION=${TAG_NAME}'
-                        }
+                        sh 'make semver -e VERSION=${VERSION}'
                     }
                 }
             }

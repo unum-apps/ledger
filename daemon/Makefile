@@ -1,6 +1,7 @@
 ACCOUNT?=$(shell cat ../ACCOUNT)
 IMAGE=unum-apps-ledger-daemon
 VERSION?=dev
+SEMVER=?=$(VERSION)
 DEBUG_PORT=24447
 TTY=$(shell if tty -s; then echo "-it"; fi)
 VOLUMES=-v ${PWD}/lib/:/opt/service/lib/ \
@@ -12,7 +13,7 @@ ENVIRONMENT=-e PYTHONDONTWRITEBYTECODE=1 \
 			-e test="python -m unittest -v" \
 			-e debug="python -m ptvsd --host 0.0.0.0 --port 5678 --wait -m unittest -v"
 
-.PHONY: dep build shell debug test lint image push
+.PHONY: dep build shell debug test lint image push semver
 
 dep:
 	rm -rf dep/
@@ -40,3 +41,8 @@ image: dep build
 
 push: image
 	docker push $(ACCOUNT)/$(IMAGE):$(VERSION)
+
+semver:
+	docker pull $(ACCOUNT)/$(IMAGE):$(VERSION)
+	docker tag $(ACCOUNT)/$(IMAGE):$(VERSION) $(ACCOUNT)/$(IMAGE):$(SEMVER)
+	docker push $(ACCOUNT)/$(IMAGE):$(SEMVER)

@@ -1,10 +1,11 @@
 VERSION?=$(shell cat VERSION)
+SEMVER=$(shell cat VERSION)
 TILT_PORT=7633
 INSTALL=python:3.8.5-alpine3.12
 VOLUMES=-v ${PWD}/api/:/opt/service/api/ \
 		-v ${PWD}/VERSION:/opt/service/VERSION \
 		-v ${PWD}/setup.py:/opt/service/setup.py
-.PHONY: up down setup tag untag
+.PHONY: up down setup semver tag untag
 
 up:
 	kubectx docker-desktop
@@ -25,6 +26,12 @@ setup:
 	docker run $(TTY) $(VOLUMES) $(INSTALL) sh -c "cp -r /opt/service /opt/install && \
 	cd /opt/install/ && python setup.py install && \
 	python -m ledger"
+
+semver:
+	cd api; VERSION=$(VERSION) SEMVER=$(SEMVER) make semver;
+	cd daemon; VERSION=$(VERSION) SEMVER=$(SEMVER) make semver;
+	cd cron; VERSION=$(VERSION) SEMVER=$(SEMVER) make semver;
+	cd gui; VERSION=$(VERSION) SEMVER=$(SEMVER) make semver;
 
 tag:
 	-git tag -a $(VERSION) -m "Version $(VERSION)"
