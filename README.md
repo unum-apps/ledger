@@ -196,7 +196,7 @@ Also make sure you have https://github.com/gaf3/tilt-mysql and https://github.co
 - `Makefile` - File that provides all the `make` commands
 - `Dockerfile` - File that builds the Docker image
 - `requirements.txt` - Put all your standard Python libs here
-- `.pylintrc` - L:inting definitions. Change to suit your needs.
+- `.pylintrc` - L:inting definitions. Change to suit your needs
 - `bin/` - Executables
   - `cron.py` - Runs the cron
 - `kubernetes/` - Kubernetes files
