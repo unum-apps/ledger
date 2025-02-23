@@ -4,7 +4,6 @@ Module for the OPenGUI API
 
 # pylint: disable=no-self-use
 
-import os
 import json
 
 import micro_logger
@@ -33,7 +32,7 @@ def build():
 
     app = flask.Flask(service.NAME)
 
-    app.logger = micro_logger.getLogger(app.name)
+    app.logger = micro_logger.getLogger(service.NAME)
     app.unifist = unum.apps.ledger.Base.SOURCE
     app.schema = app.unifist.replace('-', '_')
 

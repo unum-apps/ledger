@@ -76,7 +76,7 @@ class TestDaemon(micro_logger_unittest.TestCase):
 
     maxDiff = None
 
-    @unittest.mock.patch.dict('os.environ', {"K8S_POD": "unit", "UNIFIST_UNUM": "unit", "SLEEP": "7", "LOG_LEVEL": "INFO"})
+    @unittest.mock.patch.dict('os.environ', {"K8S_POD": "unit", "SLEEP": "7", "LOG_LEVEL": "INFO"})
     @unittest.mock.patch("micro_logger.getLogger", micro_logger_unittest.MockLogger)
     @unittest.mock.patch('relations_rest.Source', relations.unittest.MockSource)
     @unittest.mock.patch('redis.Redis', MockRedis)
@@ -84,7 +84,7 @@ class TestDaemon(micro_logger_unittest.TestCase):
 
         self.daemon = service.Daemon()
 
-    @unittest.mock.patch.dict('os.environ', {"K8S_POD": "test", "UNIFIST_UNUM": "testy", "SLEEP": "7", "LOG_LEVEL": "INFO"})
+    @unittest.mock.patch.dict('os.environ', {"K8S_POD": "test", "SLEEP": "7", "LOG_LEVEL": "INFO"})
     @unittest.mock.patch("micro_logger.getLogger", micro_logger_unittest.MockLogger)
     @unittest.mock.patch('relations_rest.Source', relations.unittest.MockSource)
     @unittest.mock.patch('redis.Redis', MockRedis)
@@ -94,9 +94,7 @@ class TestDaemon(micro_logger_unittest.TestCase):
 
         self.assertEqual(daemon.name, "ledger-daemon")
         self.assertEqual(daemon.unifist, "ledger-app-unum")
-        self.assertEqual(daemon.unum, "testy")
-        self.assertEqual(daemon.namespace, "ledger-app-unum-testy")
-        self.assertEqual(daemon.group, "daemon-ledger-app-unum-testy")
+        self.assertEqual(daemon.group, "daemon-ledger-app-unum")
         self.assertEqual(daemon.group_id, "test")
 
         self.assertEqual(daemon.sleep, 7)
@@ -105,7 +103,7 @@ class TestDaemon(micro_logger_unittest.TestCase):
 
         self.assertIsInstance(relations.source("ledger-app-unum"), relations.unittest.MockSource)
 
-        self.assertEqual(daemon.redis.host, "redis.ledger-app-unum-testy")
+        self.assertEqual(daemon.redis.host, "redis.ledger-app-unum")
         self.assertEqual(daemon.redis.queue["ledger/origin"], [])
 
     def test_process(self):

@@ -16,7 +16,7 @@ if not sys.warnoptions:
 
 class Testrestx(relations.unittest.TestCase):
 
-    @unittest.mock.patch.dict('os.environ', {"UNIFIST_UNUM": "unit", "LOG_LEVEL": "INFO"})
+    @unittest.mock.patch.dict('os.environ', {"LOG_LEVEL": "INFO"})
     @unittest.mock.patch('service.open', create=True)
     def setUp(self, mock_open):
 
@@ -44,7 +44,7 @@ class Testrestx(relations.unittest.TestCase):
 
 class TestAPI(Testrestx):
 
-    @unittest.mock.patch.dict('os.environ', {"UNIFIST_UNUM": "test", "LOG_LEVEL": "INFO"})
+    @unittest.mock.patch.dict('os.environ', {"LOG_LEVEL": "INFO"})
     @unittest.mock.patch('service.open', create=True)
     def test_build(self, mock_open):
 
@@ -56,9 +56,7 @@ class TestAPI(Testrestx):
 
         self.assertEqual(app.name, "ledger-api")
         self.assertEqual(app.unifist, "ledger-app-unum")
-        self.assertEqual(app.unum, "test")
-        self.assertEqual(app.namespace, "ledger-app-unum-test")
-        self.assertEqual(app.schema, "ledger_app_unum_test")
+        self.assertEqual(app.schema, "ledger_app_unum")
 
     def test_migrations(self):
 

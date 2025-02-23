@@ -4,7 +4,6 @@ Module for the Subnet Queue
 
 # pylint: disable=no-self-use
 
-import os
 import json
 import redis
 

@@ -1,4 +1,4 @@
-# ledger
+# ledger-app-unum
 
 # Requirements
 
@@ -14,7 +14,7 @@
 To install as a module, list in requirements.txt as:
 
 ```
-git+ssh://git@github.com.com/get-better-io/ledger.git@0.1.0#egg=ledger
+git+ssh://git@github.com.com/unum-apps/ledger.git@0.1.0#egg=unum-apps-ledger
 ```
 
 # Development
@@ -41,17 +41,15 @@ Also make sure you have https://github.com/gaf3/tilt-mysql and https://github.co
 - `Makefile` - File that provides all the `make` commands
 - `Tiltfile` - Deploys to the locally Kubernetes environment
 - `kubernetes/` - Service Kubernetes files
-  - `base/` - Base kustomization for the service to deploy to production
-    - `namespace.yaml` - Namespace file
-    - `kustomization.yaml` - Collates the above
   - `tilt/` - Tilt kustomization for the service to deploy locally
+    - `namespace.yaml` - Namespace file
     - `kustomization.yaml` - Collates the base and microservice tilt kustomizations
 - `.vscode/` - Settings for vscode local development and debugging
   - `lauch.json` - Debugger information for each microservice
 - `secret/` - Directory used to create local secrets (.gitignore'd)
   - `mysql.json` - Connection informatioin for tilt-mysql
 - `config/` - Directory used to create local config (.gitignore'd)
-- `setup.py` - Makes this repo installable as `pip install git@github.com.com:get-better-io/ledger.git` to access these Models via this API
+- `setup.py` - Makes this repo installable as `pip install git@github.com.com:unum-apps/ledger.git` to access these Models via this API
 
 # ledger-api
 
@@ -85,13 +83,13 @@ Also make sure you have https://github.com/gaf3/tilt-mysql and https://github.co
 - `kubernetes/` - Kubernetes files
   - `base/` - Base files, what's deploy to the actual cluster
     - `api.yaml` - Deployment and Service for api
-    - `prometheus.yaml` - Prometheus Monitors
+    - `prometheus.yaml` - Prometheus Monitors (currently disabled)
     - `kustomization.yaml` - Collates the above to form base
   - `tilt/` - Tilt files, what's deploy to your local machine
     - `api.yaml` - Deployment and Service for api overriden for debugging
     - `kustomization.yaml` - Collates the above to form tilt
 - `lib/` - Main code
-  - `ledger.py` - Models, change these to your own
+  - `unum/apps/ledger.py` - Models, change these to your own
   - `service.py` - Main api code, endpoints, etc. Change Resource to match your models
 - `test/` - Main code
   - `test_service.py` - Test api code, endpoints, etc. Change to match your service changes
@@ -112,7 +110,7 @@ Also make sure you have https://github.com/gaf3/tilt-mysql and https://github.co
 - `kubernetes/` - Kubernetes files
   - `base/` - Base files, what's deploy to the actual cluster
     - `gui.yaml` - Deployment and Service for gui
-    - `prometheus.yaml` - Prometheus Monitors
+    - `prometheus.yaml` - Prometheus Monitors (currently disabled)
     - `kustomization.yaml` - Collates the above to form base
   - `tilt/` - Tilt files, what's deploy to your local machine
     - `gui.yaml` - Deployment and Service for gui overriden for debugging
@@ -164,7 +162,7 @@ Also make sure you have https://github.com/gaf3/tilt-mysql and https://github.co
 - `kubernetes/` - Kubernetes files
   - `base/` - Base files, what's deploy to the actual cluster
     - `daemon.yaml` - Deployment and Service for daemon
-    - `prometheus.yaml` - Prometheus Monitors
+    - `prometheus.yaml` - Prometheus Monitors (currently disabled)
     - `kustomization.yaml` - Collates the above to form base
   - `tilt/` - Tilt files, what's deploy to your local machine
     - `daemon.yaml` - Deployment and Service for daemon overriden for debugging
@@ -204,7 +202,6 @@ Also make sure you have https://github.com/gaf3/tilt-mysql and https://github.co
 - `kubernetes/` - Kubernetes files
   - `base/` - Base files, what's deploy to the actual cluster
     - `cron.yaml` - Deployment and Service for cron
-    - `prometheus.yaml` - Prometheus Monitors
     - `kustomization.yaml` - Collates the above to form base
   - `tilt/` - Tilt files, what's deploy to your local machine
     - `cron.yaml` - Deployment and Service for cron overriden for debugging

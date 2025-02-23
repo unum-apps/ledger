@@ -27,7 +27,7 @@ class TestCron(micro_logger_unittest.TestCase):
 
     maxDiff = None
 
-    @unittest.mock.patch.dict('os.environ', {"LOG_LEVEL": "INFO", "UNIFIST_UNUM": "unit"})
+    @unittest.mock.patch.dict('os.environ', {"LOG_LEVEL": "INFO"})
     @unittest.mock.patch("micro_logger.getLogger", micro_logger_unittest.MockLogger)
     @unittest.mock.patch('relations_rest.Source', relations.unittest.MockSource)
     @unittest.mock.patch('redis.Redis', MockRedis)
@@ -35,7 +35,7 @@ class TestCron(micro_logger_unittest.TestCase):
 
         self.cron = service.Cron()
 
-    @unittest.mock.patch.dict('os.environ', {"LOG_LEVEL": "INFO", "UNIFIST_UNUM": "test"})
+    @unittest.mock.patch.dict('os.environ', {"LOG_LEVEL": "INFO"})
     @unittest.mock.patch("micro_logger.getLogger", micro_logger_unittest.MockLogger)
     @unittest.mock.patch('relations_rest.Source', relations.unittest.MockSource)
     @unittest.mock.patch('redis.Redis', MockRedis)
@@ -45,14 +45,13 @@ class TestCron(micro_logger_unittest.TestCase):
 
         self.assertEqual(cron.name, "ledger-cron")
         self.assertEqual(cron.unifist, "ledger-app-unum")
-        self.assertEqual(cron.unum, "test")
-        self.assertEqual(cron.namespace, "ledger-app-unum-test")
+
 
         self.assertEqual(cron.logger.name, "ledger-cron")
 
         self.assertIsInstance(relations.source("ledger-app-unum"), relations.unittest.MockSource)
 
-        self.assertEqual(cron.redis.host, "redis.ledger-app-unum-test")
+        self.assertEqual(cron.redis.host, "redis.ledger-app-unum")
 
     def test_process(self):
 
