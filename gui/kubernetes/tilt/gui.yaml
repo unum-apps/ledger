@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gui
+  namespace: ledger-app-unum
+spec:
+  template:
+    spec:
+      containers:
+      - name: gui
+        image: unum-apps-ledger-gui
+        imagePullPolicy: Never
