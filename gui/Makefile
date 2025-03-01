@@ -1,5 +1,5 @@
 ACCOUNT?=$(shell cat ../ACCOUNT)
-IMAGE=ledger-gui
+IMAGE=unum-apps-ledger-gui
 VERSION?=dev
 SEMVER=?=$(VERSION)
 NAME=$(IMAGE)-$(ACCOUNT)
