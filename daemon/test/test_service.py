@@ -93,17 +93,17 @@ class TestDaemon(micro_logger_unittest.TestCase):
         daemon = service.Daemon()
 
         self.assertEqual(daemon.name, "ledger-daemon")
-        self.assertEqual(daemon.unifist, "ledger-app-unum")
-        self.assertEqual(daemon.group, "daemon-ledger-app-unum")
+        self.assertEqual(daemon.unifist, "ledger")
+        self.assertEqual(daemon.group, "daemon-ledger")
         self.assertEqual(daemon.group_id, "test")
 
         self.assertEqual(daemon.sleep, 7)
 
         self.assertEqual(daemon.logger.name, "ledger-daemon")
 
-        self.assertIsInstance(relations.source("ledger-app-unum"), relations.unittest.MockSource)
+        self.assertIsInstance(relations.source("ledger"), relations.unittest.MockSource)
 
-        self.assertEqual(daemon.redis.host, "redis.ledger-app-unum")
+        self.assertEqual(daemon.redis.host, "redis.ledger")
         self.assertEqual(daemon.redis.queue["ledger/origin"], [])
 
     def test_process(self):

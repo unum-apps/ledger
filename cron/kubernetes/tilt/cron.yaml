@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: cron
-  namespace: ledger-app-unum
+  namespace: ledger
   labels:
     app: cron
 spec:

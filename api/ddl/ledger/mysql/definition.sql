@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `ledger_app_unum`.`entity` (
+CREATE TABLE IF NOT EXISTS `ledger`.`entity` (
   `id` BIGINT AUTO_INCREMENT,
   `unum_id` BIGINT,
   `who` VARCHAR(255) NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `ledger_app_unum`.`entity` (
   UNIQUE `unum_id_who` (`unum_id`,`who`)
 );
 
-CREATE TABLE IF NOT EXISTS `ledger_app_unum`.`fact` (
+CREATE TABLE IF NOT EXISTS `ledger`.`fact` (
   `id` BIGINT AUTO_INCREMENT,
   `witness_id` BIGINT,
   `who` VARCHAR(255) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `ledger_app_unum`.`fact` (
   UNIQUE `witness_id_who` (`witness_id`,`who`)
 );
 
-CREATE TABLE IF NOT EXISTS `ledger_app_unum`.`origin` (
+CREATE TABLE IF NOT EXISTS `ledger`.`origin` (
   `id` BIGINT AUTO_INCREMENT,
   `who` VARCHAR(255) NOT NULL,
   `meta` JSON NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `ledger_app_unum`.`origin` (
   UNIQUE `who` (`who`)
 );
 
-CREATE TABLE IF NOT EXISTS `ledger_app_unum`.`unum` (
+CREATE TABLE IF NOT EXISTS `ledger`.`unum` (
   `id` BIGINT AUTO_INCREMENT,
   `who` VARCHAR(255) NOT NULL,
   `meta` JSON NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `ledger_app_unum`.`unum` (
   UNIQUE `who` (`who`)
 );
 
-CREATE TABLE IF NOT EXISTS `ledger_app_unum`.`witness` (
+CREATE TABLE IF NOT EXISTS `ledger`.`witness` (
   `id` BIGINT AUTO_INCREMENT,
   `entity_id` BIGINT,
   `origin_id` BIGINT,
