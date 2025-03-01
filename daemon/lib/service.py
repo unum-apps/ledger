@@ -34,7 +34,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
 
         self.logger = micro_logger.getLogger(self.name)
 
-        self.source = relations_rest.Source("ledger-app-unum", url=f"http://api.{self.unifist}")
+        self.source = relations_rest.Source(self.unifist, url=f"http://api.{self.unifist}")
 
         self.redis = redis.Redis(host=f'redis.{self.unifist}', encoding="utf-8", decode_responses=True)
 

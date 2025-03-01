@@ -44,14 +44,14 @@ class TestCron(micro_logger_unittest.TestCase):
         cron = service.Cron()
 
         self.assertEqual(cron.name, "ledger-cron")
-        self.assertEqual(cron.unifist, "ledger-app-unum")
+        self.assertEqual(cron.unifist, "ledger")
 
 
         self.assertEqual(cron.logger.name, "ledger-cron")
 
-        self.assertIsInstance(relations.source("ledger-app-unum"), relations.unittest.MockSource)
+        self.assertIsInstance(relations.source("ledger"), relations.unittest.MockSource)
 
-        self.assertEqual(cron.redis.host, "redis.ledger-app-unum")
+        self.assertEqual(cron.redis.host, "redis.ledger")
 
     def test_process(self):
 
