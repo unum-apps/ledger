@@ -101,6 +101,14 @@ pipeline {
                         }
                     }
                 }
+                stage('module') {
+                    stages {
+                        stage('setup') {
+                            sh 'make setup'
+                        }
+                    }
+                }
+
             }
         }
         stage('push') {
