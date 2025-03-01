@@ -13,7 +13,11 @@ setup(
     name="unum-apps-ledger",
     version=version,
     package_dir = {'': 'api/lib'},
-    py_modules = ['unum.apps.ledger'],
+    py_modules = [
+        'unum',
+        'unum.apps',
+        'unum.apps.ledger'
+    ],
     install_requires=[
         'relations-rest==0.5.0'
     ]
