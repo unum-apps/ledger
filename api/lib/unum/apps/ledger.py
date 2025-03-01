@@ -9,7 +9,7 @@ class Base(relations.Model):
     Base class for ledger models
     """
 
-    SOURCE = "ledger-app-unum"
+    SOURCE = "ledger"
 
 class Unum(Base):
     """
