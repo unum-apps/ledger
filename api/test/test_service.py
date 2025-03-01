@@ -31,7 +31,7 @@ class Testrestx(relations.unittest.TestCase):
 
         migrations = relations.Migrations()
 
-        cursor.execute("CREATE DATABASE IF NOT EXISTS `ledger_app_unum`")
+        cursor.execute("CREATE DATABASE IF NOT EXISTS `ledge`")
 
         migrations.load(self.app.source.name, "definition.sql")
 
@@ -39,7 +39,7 @@ class Testrestx(relations.unittest.TestCase):
 
         cursor = self.app.source.connection.cursor()
 
-        cursor.execute("DROP DATABASE IF EXISTS `ledger_app_unum`")
+        cursor.execute("DROP DATABASE IF EXISTS `ledge`")
 
 
 class TestAPI(Testrestx):
@@ -56,7 +56,7 @@ class TestAPI(Testrestx):
 
         self.assertEqual(app.name, "ledger-api")
         self.assertEqual(app.unifist, "ledger-app-unum")
-        self.assertEqual(app.schema, "ledger_app_unum")
+        self.assertEqual(app.schema, "ledge")
 
     def test_migrations(self):
 
@@ -66,8 +66,8 @@ class TestAPI(Testrestx):
 
         for stamp, pair in migrations.list(self.app.source.name).items():
 
-            cursor.execute("DROP DATABASE IF EXISTS `ledger_app_unum`")
-            cursor.execute("CREATE DATABASE IF NOT EXISTS `ledger_app_unum`")
+            cursor.execute("DROP DATABASE IF EXISTS `ledge`")
+            cursor.execute("CREATE DATABASE IF NOT EXISTS `ledge`")
 
             try:
                 migrations.load(self.app.source.name, pair["definition"])

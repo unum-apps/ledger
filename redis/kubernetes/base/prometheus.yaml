@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: redis
-  namespace: ledger-app-unum
+  namespace: ledger
 spec:
   selector:
     matchLabels:

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api
-  namespace: ledger-app-unum
+  namespace: ledger
   labels:
     app: api
 spec:
@@ -65,7 +65,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: api
-  namespace: ledger-app-unum
+  namespace: ledger
   labels:
     app: api
 spec:
