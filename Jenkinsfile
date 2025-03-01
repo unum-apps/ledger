@@ -104,7 +104,9 @@ pipeline {
                 stage('module') {
                     stages {
                         stage('setup') {
-                            sh 'make setup'
+                            steps {
+                                sh 'make setup'
+                            }
                         }
                     }
                 }
