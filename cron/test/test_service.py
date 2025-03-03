@@ -6,7 +6,7 @@ import relations.unittest
 import json
 
 import service
-import unum.apps.ledger
+import unum_ledger
 
 class MockRedis:
 
@@ -55,7 +55,7 @@ class TestCron(micro_logger_unittest.TestCase):
 
     def test_process(self):
 
-        origin = unum.apps.ledger.Origin("Tom").create()
+        origin = unum_ledger.Origin("Tom").create()
 
         self.cron.process()
 

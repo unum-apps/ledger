@@ -10,14 +10,10 @@ if version is None:
         version = version_file.read().strip()
 
 setup(
-    name="unum-apps-ledger",
+    name="unum-ledger",
     version=version,
     package_dir = {'': 'api/lib'},
-    py_modules = [
-        'unum',
-        'unum.apps',
-        'unum.apps.ledger'
-    ],
+    py_modules = ['unum_ledger'],
     install_requires=[
         'relations-rest==0.5.0'
     ]

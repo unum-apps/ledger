@@ -5,7 +5,7 @@ import relations
 import relations.unittest
 
 import service
-import unum.apps.ledger
+import unum_ledger
 
 import os
 import sys

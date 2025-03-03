@@ -6,7 +6,7 @@ import relations.unittest
 import json
 
 import service
-import unum.apps.ledger
+import unum_ledger
 
 class MockRedis:
 
@@ -112,7 +112,7 @@ class TestDaemon(micro_logger_unittest.TestCase):
 
         self.daemon.process()
 
-        origin = unum.apps.ledger.Origin("Tom").create()
+        origin = unum_ledger.Origin("Tom").create()
         self.daemon.redis.queue["ledger/origin"].append({"origin": json.dumps(origin.export())})
 
         self.daemon.process()
