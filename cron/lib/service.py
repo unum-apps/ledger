@@ -10,7 +10,7 @@ import redis
 import micro_logger
 import relations_rest
 
-import unum.apps.ledger
+import unum_ledger
 
 import prometheus_client
 
@@ -27,7 +27,7 @@ class Cron: # pylint: disable=too-few-public-methods
     def __init__(self):
 
         self.name = "ledger-cron"
-        self.unifist = unum.apps.ledger.Base.SOURCE
+        self.unifist = unum_ledger.Base.SOURCE
 
         self.logger = micro_logger.getLogger(self.name)
 
@@ -41,7 +41,7 @@ class Cron: # pylint: disable=too-few-public-methods
         Loads subnets and pushes onto the queue
         """
 
-        for origin in unum.apps.ledger.Origin.many():
+        for origin in unum_ledger.Origin.many():
             self.logger.info("origin", extra={"origin": origin.export()})
             ORIGINS.observe(1)
             self.redis.xadd("ledger/origin", fields={"origin": json.dumps(origin.export())})

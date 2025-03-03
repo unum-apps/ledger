@@ -13,7 +13,7 @@ import relations_rest
 
 import prometheus_client
 
-import unum.apps.ledger
+import unum_ledger
 
 PROCESS = prometheus_client.Gauge("process_seconds", "Time to complete a processing task")
 ORIGINS = prometheus_client.Summary("origins_processed", "Origins processed")
@@ -26,7 +26,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
     def __init__(self):
 
         self.name = "ledger-daemon"
-        self.unifist = unum.apps.ledger.Base.SOURCE
+        self.unifist = unum_ledger.Base.SOURCE
         self.group = f"daemon-{self.unifist}"
         self.group_id = os.environ["K8S_POD"]
 

@@ -17,8 +17,8 @@ ENVIRONMENT=-e PYTHONDONTWRITEBYTECODE=1 \
 
 dep:
 	rm -rf dep/
-	mkdir -p dep/ledger/api/lib/unum/apps
-	cp ../api/lib/unum/apps/ledger.py dep/ledger/api/lib/unum/apps
+	mkdir -p dep/ledger/api/lib/
+	cp ../api/lib/unum_ledger.py dep/ledger/api/lib/
 	cp ../VERSION dep/ledger/
 	cp ../setup.py dep/ledger/
 

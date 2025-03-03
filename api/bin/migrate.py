@@ -7,9 +7,9 @@ import micro_logger
 import relations
 import relations_pymysql
 
-import unum.apps.ledger
+import unum_ledger
 
-unifist = unum.apps.ledger.Base.SOURCE
+unifist = unum_ledger.Base.SOURCE
 schema = unifist.replace('-', '_')
 
 logger = micro_logger.getLogger("ledger-api")

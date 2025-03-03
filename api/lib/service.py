@@ -17,7 +17,7 @@ import relations
 import relations_pymysql
 import relations_restx
 
-import unum.apps.ledger
+import unum_ledger
 
 NAME = "ledger-api"
 
@@ -33,7 +33,7 @@ def build():
     app = flask.Flask(service.NAME)
 
     app.logger = micro_logger.getLogger(service.NAME)
-    app.unifist = unum.apps.ledger.Base.SOURCE
+    app.unifist = unum_ledger.Base.SOURCE
     app.schema = app.unifist.replace('-', '_')
 
     metrics.init_app(app)
@@ -54,7 +54,7 @@ def build():
 
     api.add_resource(Health, '/health')
 
-    relations_restx.attach(api, service, relations.models(unum.apps.ledger, unum.apps.ledger.Base))
+    relations_restx.attach(api, service, relations.models(unum_ledger, unum_ledger.Base))
 
     return app
 
