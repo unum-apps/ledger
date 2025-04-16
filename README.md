@@ -14,7 +14,7 @@
 To install as a module, list in requirements.txt as:
 
 ```
-git+ssh://git@github.com.com/unum-apps/ledger.git@0.1.0#egg=unum-apps-ledger
+git+ssh://git@github.com.com/unum-apps/ledger.git@0.1.0#egg=unum-ledger
 ```
 
 # Development
