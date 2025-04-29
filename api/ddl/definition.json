@@ -21,12 +21,6 @@
                 "store": "app_id"
             },
             {
-                "kind": "str",
-                "name": "who",
-                "none": false,
-                "store": "who"
-            },
-            {
                 "kind": "int",
                 "name": "when",
                 "none": true,
@@ -57,10 +51,9 @@
         "store": "act",
         "title": "Act",
         "unique": {
-            "entity_id-app_id-who": [
+            "entity_id-app_id": [
                 "entity_id",
-                "app_id",
-                "who"
+                "app_id"
             ]
         }
     },
@@ -163,12 +156,6 @@
                 "store": "app_id"
             },
             {
-                "kind": "str",
-                "name": "who",
-                "none": false,
-                "store": "who"
-            },
-            {
                 "kind": "dict",
                 "name": "what",
                 "none": false,
@@ -189,10 +176,9 @@
         "store": "executor",
         "title": "Executor",
         "unique": {
-            "entity_id-app_id-who": [
+            "entity_id-app_id": [
                 "entity_id",
-                "app_id",
-                "who"
+                "app_id"
             ]
         }
     },
@@ -254,10 +240,9 @@
         "store": "fact",
         "title": "Fact",
         "unique": {
-            "entity_id-origin_id-who": [
+            "entity_id-origin_id": [
                 "entity_id",
-                "origin_id",
-                "who"
+                "origin_id"
             ]
         }
     },
@@ -338,12 +323,6 @@
                 "store": "app_id"
             },
             {
-                "kind": "str",
-                "name": "who",
-                "none": false,
-                "store": "who"
-            },
-            {
                 "kind": "dict",
                 "name": "what",
                 "none": false,
@@ -364,10 +343,9 @@
         "store": "narrator",
         "title": "Narrator",
         "unique": {
-            "entity_id-app_id-who": [
+            "entity_id-app_id": [
                 "entity_id",
-                "app_id",
-                "who"
+                "app_id"
             ]
         }
     },

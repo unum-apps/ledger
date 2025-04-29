@@ -54,6 +54,7 @@ class Fact(Base):
     what = dict         # playload of the entire fact from the Origin
     meta = dict         # any special weird data
 
+    UNIQUE = ["entity_id", "origin_id"]
     INDEX = "when"
     ORDER = "-when"
 
@@ -77,11 +78,11 @@ class Act(Base):
     id = int
     entity_id = int     # Entity this is directed too
     app_id = int        # App this is referencing
-    who = str           # unique way to identity this event
     when = int          # epoch time this happened
     what = dict         # playload of the entire Act from the App
     meta = dict         # any special weird data
 
+    UNIQUE = ["entity_id", "app_id"]
     INDEX = "when"
     ORDER = "-when"
 
@@ -111,9 +112,10 @@ class Narrator(Base):
     id = int
     entity_id = int # Entity this is witnessing
     app_id = int    # Origin this is witnessing
-    who = str       # unique way to identity this narrator, account id, etc
     what = dict     # what is allowed fom the Fact to the App
     meta = dict     # any special weird data
+
+    UNIQUE = ["entity_id", "app_id"]
 
 relations.OneToMany(Entity, Narrator)
 relations.OneToMany(App, Narrator)
@@ -126,9 +128,10 @@ class Executor(Base):
     id = int
     entity_id = int # Entity this is be excuting to
     app_id = int    # App that is executing
-    who = str       # unique way to identity this executor, account id, etc
     what = dict     # what is allowed from the App to the Act
     meta = dict     # any special weird data
+
+    UNIQUE = ["entity_id", "app_id"]
 
 relations.OneToMany(Entity, Executor)
 relations.OneToMany(App, Executor)
