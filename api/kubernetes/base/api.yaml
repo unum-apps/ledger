@@ -41,14 +41,14 @@ spec:
         - name: http
           containerPort: 80
         readinessProbe:
-          initialDelaySeconds: 10
-          periodSeconds: 10
+          initialDelaySeconds: 5
+          periodSeconds: 5
           httpGet:
             path: /health
             port: 80
         livenessProbe:
-          initialDelaySeconds: 10
-          periodSeconds: 10
+          initialDelaySeconds: 5
+          periodSeconds: 5
           httpGet:
             path: /health
             port: 80

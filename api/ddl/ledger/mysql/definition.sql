@@ -27,16 +27,6 @@ CREATE TABLE IF NOT EXISTS `ledger`.`entity` (
   UNIQUE `unum_id_who` (`unum_id`,`who`)
 );
 
-CREATE TABLE IF NOT EXISTS `ledger`.`executor` (
-  `id` BIGINT AUTO_INCREMENT,
-  `entity_id` BIGINT,
-  `app_id` BIGINT,
-  `what` JSON NOT NULL,
-  `meta` JSON NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE `entity_id_app_id` (`entity_id`,`app_id`)
-);
-
 CREATE TABLE IF NOT EXISTS `ledger`.`fact` (
   `id` BIGINT AUTO_INCREMENT,
   `entity_id` BIGINT,
@@ -47,21 +37,10 @@ CREATE TABLE IF NOT EXISTS `ledger`.`fact` (
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `when` (`when`),
-  UNIQUE `entity_id_origin_id` (`entity_id`,`origin_id`)
+  UNIQUE `entity_id_origin_id_who_when` (`entity_id`,`origin_id`,`who`,`when`)
 );
 
 CREATE TABLE IF NOT EXISTS `ledger`.`herald` (
-  `id` BIGINT AUTO_INCREMENT,
-  `entity_id` BIGINT,
-  `origin_id` BIGINT,
-  `who` VARCHAR(255) NOT NULL,
-  `what` JSON NOT NULL,
-  `meta` JSON NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE `entity_id_origin_id_who` (`entity_id`,`origin_id`,`who`)
-);
-
-CREATE TABLE IF NOT EXISTS `ledger`.`narrator` (
   `id` BIGINT AUTO_INCREMENT,
   `entity_id` BIGINT,
   `app_id` BIGINT,

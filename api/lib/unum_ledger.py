@@ -54,7 +54,7 @@ class Fact(Base):
     what = dict         # playload of the entire fact from the Origin
     meta = dict         # any special weird data
 
-    UNIQUE = ["entity_id", "origin_id"]
+    UNIQUE = ["entity_id", "origin_id", "who", "when"]
     INDEX = "when"
     ORDER = "-when"
 
@@ -104,7 +104,7 @@ class Witness(Base):
 relations.OneToMany(Entity, Witness)
 relations.OneToMany(Origin, Witness)
 
-class Narrator(Base):
+class Herald(Base):
     """
     Narrator allows an App to read Facts
     """
@@ -117,36 +117,5 @@ class Narrator(Base):
 
     UNIQUE = ["entity_id", "app_id"]
 
-relations.OneToMany(Entity, Narrator)
-relations.OneToMany(App, Narrator)
-
-class Executor(Base):
-    """
-    Executor allows an App to write Acts
-    """
-
-    id = int
-    entity_id = int # Entity this is be excuting to
-    app_id = int    # App that is executing
-    what = dict     # what is allowed from the App to the Act
-    meta = dict     # any special weird data
-
-    UNIQUE = ["entity_id", "app_id"]
-
-relations.OneToMany(Entity, Executor)
-relations.OneToMany(App, Executor)
-
-class Herald(Base):
-    """
-    Herald allows an Origin to read Acts (and act on them)
-    """
-
-    id = int
-    entity_id = int # Entity this is heralding
-    origin_id = int # Origin this is heralding
-    who = str       # unique way to identity this herald, account id, etc
-    what = dict     # what is allowed from the Act to the Origin
-    meta = dict     # any special weird data
-
 relations.OneToMany(Entity, Herald)
-relations.OneToMany(Origin, Herald)
+relations.OneToMany(App, Herald)

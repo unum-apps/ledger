@@ -134,54 +134,6 @@
             ]
         }
     },
-    "executor": {
-        "fields": [
-            {
-                "auto": true,
-                "kind": "int",
-                "name": "id",
-                "none": true,
-                "store": "id"
-            },
-            {
-                "kind": "int",
-                "name": "entity_id",
-                "none": true,
-                "store": "entity_id"
-            },
-            {
-                "kind": "int",
-                "name": "app_id",
-                "none": true,
-                "store": "app_id"
-            },
-            {
-                "kind": "dict",
-                "name": "what",
-                "none": false,
-                "store": "what"
-            },
-            {
-                "kind": "dict",
-                "name": "meta",
-                "none": false,
-                "store": "meta"
-            }
-        ],
-        "id": "id",
-        "index": {},
-        "name": "executor",
-        "schema": "ledger",
-        "source": "ledger",
-        "store": "executor",
-        "title": "Executor",
-        "unique": {
-            "entity_id-app_id": [
-                "entity_id",
-                "app_id"
-            ]
-        }
-    },
     "fact": {
         "fields": [
             {
@@ -240,68 +192,15 @@
         "store": "fact",
         "title": "Fact",
         "unique": {
-            "entity_id-origin_id": [
+            "entity_id-origin_id-who-when": [
                 "entity_id",
-                "origin_id"
+                "origin_id",
+                "who",
+                "when"
             ]
         }
     },
     "herald": {
-        "fields": [
-            {
-                "auto": true,
-                "kind": "int",
-                "name": "id",
-                "none": true,
-                "store": "id"
-            },
-            {
-                "kind": "int",
-                "name": "entity_id",
-                "none": true,
-                "store": "entity_id"
-            },
-            {
-                "kind": "int",
-                "name": "origin_id",
-                "none": true,
-                "store": "origin_id"
-            },
-            {
-                "kind": "str",
-                "name": "who",
-                "none": false,
-                "store": "who"
-            },
-            {
-                "kind": "dict",
-                "name": "what",
-                "none": false,
-                "store": "what"
-            },
-            {
-                "kind": "dict",
-                "name": "meta",
-                "none": false,
-                "store": "meta"
-            }
-        ],
-        "id": "id",
-        "index": {},
-        "name": "herald",
-        "schema": "ledger",
-        "source": "ledger",
-        "store": "herald",
-        "title": "Herald",
-        "unique": {
-            "entity_id-origin_id-who": [
-                "entity_id",
-                "origin_id",
-                "who"
-            ]
-        }
-    },
-    "narrator": {
         "fields": [
             {
                 "auto": true,
@@ -337,11 +236,11 @@
         ],
         "id": "id",
         "index": {},
-        "name": "narrator",
+        "name": "herald",
         "schema": "ledger",
         "source": "ledger",
-        "store": "narrator",
-        "title": "Narrator",
+        "store": "herald",
+        "title": "Herald",
         "unique": {
             "entity_id-app_id": [
                 "entity_id",

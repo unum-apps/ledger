@@ -5,6 +5,7 @@ Module for the Daemon
 # pylint: disable=no-self-use
 
 import os
+import time
 import micro_logger
 import json
 import redis
@@ -20,6 +21,9 @@ ORIGINS = prometheus_client.Summary("origins_processed", "Origins processed")
 FACTS = prometheus_client.Summary("facts_processed", "Facts processed")
 ACTS = prometheus_client.Summary("acts_processed", "Acts processed")
 
+WHO = "ledger"
+NAME = f"{WHO}-daemon"
+
 class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attributes
     """
     Daemon class
@@ -27,9 +31,8 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
 
     def __init__(self):
 
-        self.name = "ledger-daemon"
+        self.name = self.group = NAME
         self.unifist = unum_ledger.Base.SOURCE
-        self.group = f"daemon-{self.unifist}"
         self.group_id = os.environ["K8S_POD"]
 
         self.sleep = int(os.environ.get("SLEEP", 5))
@@ -54,11 +57,39 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         ):
             self.redis.xgroup_create("ledger/fact", self.group, mkstream=True)
 
-        if (
-            not self.redis.exists("ledger/act") or
-            self.group not in [group["name"] for group in self.redis.xinfo_groups("ledger/act")]
-        ):
-            self.redis.xgroup_create("ledger/act", self.group, mkstream=True)
+    def act(self, **act):
+        """
+        Creates an act if needed
+        """
+
+        act = unum_ledger.Act(**act).create()
+
+        self.logger.info("act", extra={"act": {"id": act.id}})
+        ACTS.observe(1)
+        self.redis.xadd("ledger/act", fields={"act": json.dumps(act.export())})
+
+    def do_join(self, instance):
+        """
+        Perform the join
+        """
+
+        unum_ledger.Herald(
+            entity_id=instance["what"]["entity_id"],
+            app_id=self.app.id
+        ).create()
+
+        self.act(
+            entity_id=instance["what"]["entity_id"],
+            app_id=self.app.id,
+            when=int(time.time()),
+            what={
+                "base": "message",
+                "kind": "channel",
+                "text": "Welcome to the Ledger App!",
+                "channel": self.app.meta__channel
+            },
+            meta=instance["meta"]
+        )
 
     @PROCESS.time()
     def process(self):
@@ -68,8 +99,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
 
         message = self.redis.xreadgroup(self.group, self.group_id, {
             "ledger/origin": ">",
-            "ledger/fact": ">",
-            "ledger/act": ">"
+            "ledger/fact": ">"
         }, count=1, block=1000*self.sleep)
 
         if not message:
@@ -93,27 +123,9 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
                 instance["what"].get("command", {}).get("app") == "ledger" and 
                 instance["what"].get("command", {}).get("name") == "join"
             ):
+                self.do_join(instance)
                 
-                unum_ledger.Narrator(
-                    entity_id=instance["what"]["entity_id"],
-                    app_id=self.app.id
-
-                ).create()
-
-                unum_ledger.Executor(
-                    entity_id=instance["what"]["entity_id"],
-                    app_id=self.app.id
-                ).create()
-
             self.redis.xack("ledger/fact", self.group, message[0][1][0][0])
-
-        elif "act" in message[0][1][0][1]:
-
-            instance = json.loads(message[0][1][0][1]["act"])
-            self.logger.info("act", extra={"act": instance})
-            ACTS.observe(1)
-
-            self.redis.xack("ledger/act", self.group, message[0][1][0][0])
 
     def run(self):
         """

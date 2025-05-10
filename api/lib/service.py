@@ -22,10 +22,8 @@ import unum_ledger
 
 WHO = "ledger"
 META = """
-channel: ledger
+channel: unum-ledger
 description: the base App of an Unum, records and coordinates all
-roles:
-- admin
 commands:
 - name: join
   description: Join the ledger App and the Unum overall
