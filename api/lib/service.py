@@ -23,7 +23,7 @@ import unum_ledger
 WHO = "ledger"
 META = """
 channel: unum-ledger
-description: the base App of an Unum, records and coordinates all
+description: Base App of an Unum, records and coordinates all
 commands:
 - name: join
   description: Join the ledger App and the Unum overall
@@ -33,6 +33,10 @@ commands:
   description: List all the installed Apps in this Unum.
 - name: origins
   description: List all the installed Apps in this Unum.
+- name: who
+  description: Shows your current name in the Unum
+- name: who {who}
+  description: Changes your current name to {who} in the Unum
 """
 
 NAME = f"{WHO}-api"

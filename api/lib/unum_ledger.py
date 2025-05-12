@@ -32,6 +32,34 @@ class Entity(Base):
 
 relations.OneToMany(Unum, Entity)
 
+class App(Base):
+    """
+    App something like TehFeelz, PokeMeme and how to handle it
+    """
+
+    id = int
+    who = str   # unique way to identity this app, class method in this cases
+    meta = dict # any special weird data
+
+class Act(Base):
+    """
+    Act, a record of what needs to happen
+    """
+
+    id = int
+    entity_id = int     # Entity this is directed too
+    app_id = int        # App this is referencing
+    when = int          # epoch time this happened
+    what = dict         # playload of the entire Act from the App
+    meta = dict         # any special weird data
+
+    UNIQUE = None
+    INDEX = "when"
+    ORDER = "-when"
+
+relations.OneToMany(Entity, Act)
+relations.OneToMany(App, Act)
+
 class Origin(Base):
     """
     Origin something like Discord, BlueSky and how to handle it
@@ -54,40 +82,12 @@ class Fact(Base):
     what = dict         # playload of the entire fact from the Origin
     meta = dict         # any special weird data
 
-    UNIQUE = ["entity_id", "origin_id", "who", "when"]
+    UNIQUE = None
     INDEX = "when"
     ORDER = "-when"
 
 relations.OneToMany(Entity, Fact)
 relations.OneToMany(Origin, Fact)
-
-class App(Base):
-    """
-    App something like TehFeelz, PokeMeme and how to handle it
-    """
-
-    id = int
-    who = str   # unique way to identity this app, class method in this cases
-    meta = dict # any special weird data
-
-class Act(Base):
-    """
-    Act, a record of what needs to happen
-    """
-
-    id = int
-    entity_id = int     # Entity this is directed too
-    app_id = int        # App this is referencing
-    when = int          # epoch time this happened
-    what = dict         # playload of the entire Act from the App
-    meta = dict         # any special weird data
-
-    UNIQUE = ["entity_id", "app_id"]
-    INDEX = "when"
-    ORDER = "-when"
-
-relations.OneToMany(Entity, Act)
-relations.OneToMany(App, Act)
 
 class Witness(Base):
     """

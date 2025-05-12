@@ -41,7 +41,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
 
         self.source = relations_rest.Source(self.unifist, url=f"http://api.{self.unifist}")
 
-        self.app = unum_ledger.App.one(who="ledger").retrieve()
+        self.app = unum_ledger.App.one(who=WHO).retrieve()
 
         self.redis = redis.Redis(host=f'redis.{self.unifist}', encoding="utf-8", decode_responses=True)
 
@@ -61,6 +61,12 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         """
         Creates an act if needed
         """
+
+        if unum_ledger.Herald.one(
+            entity_id=act["entity_id"],
+            app_id=self.app.id
+        ).retrieve(False) is None:
+            return
 
         act = unum_ledger.Act(**act).create()
 
@@ -85,11 +91,104 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
             what={
                 "base": "message",
                 "kind": "channel",
-                "text": "Welcome to the Ledger App!",
+                "text": f"Welcome to the Ledger App {{entity:{instance['what']['entity_id']}}}!",
                 "channel": self.app.meta__channel
             },
             meta=instance["meta"]
         )
+
+    def do_apps(self, instance):
+        """
+        Perform the apps
+        """
+
+        text = "Current Apps are:"
+
+        for app in unum_ledger.App.many():
+            text += f"\n{app.who} - {app.meta__description} - {app.meta__channel} channel"
+
+        self.act(
+            entity_id=instance["what"]["entity_id"],
+            app_id=self.app.id,
+            when=int(time.time()),
+            what={
+                "base": "message",
+                "kind": "channel",
+                "text": text,
+                "channel": self.app.meta__channel
+            },
+            meta=instance["meta"]
+        )
+
+    def do_origins(self, instance):
+        """
+        Perform the origins
+        """
+
+        text = "Current Origins are:"
+
+        for origin in unum_ledger.Origin.many():
+            text += f"\n{origin.who} - {origin.meta__description} - {origin.meta__channel} channel"
+
+        self.act(
+            entity_id=instance["what"]["entity_id"],
+            app_id=self.app.id,
+            when=int(time.time()),
+            what={
+                "base": "message",
+                "kind": "channel",
+                "text": text,
+                "channel": self.app.meta__channel
+            },
+            meta=instance["meta"]
+        )
+
+    def do_who(self, instance):
+        """
+        Perform the who
+        """
+
+        if instance["what"]["command"].get("args"):
+            unum_ledger.Entity.one(instance["what"]["entity_id"]).set(who=" ".join(instance["what"]["command"]["args"])).update()
+
+        who = unum_ledger.Entity.one(instance["what"]["entity_id"]).who
+
+        text = f"{{entity:{instance['what']['entity_id']}}}, your name is {who}."
+
+        self.act(
+            entity_id=instance["what"]["entity_id"],
+            app_id=self.app.id,
+            when=int(time.time()),
+            what={
+                "base": "message",
+                "kind": "channel",
+                "text": text,
+                "channel": self.app.meta__channel
+            },
+            meta=instance["meta"]
+        )
+
+    def do_command(self, instance):
+        """
+        Perform the who
+        """
+
+        name = instance["what"].get("command", {}).get("name") 
+
+        if name != "join" and unum_ledger.Herald.one(
+            entity_id=instance["what"].get("entity_id"),
+            app_id=self.app.id
+        ).retrieve(False) is None:
+            return
+
+        if name == "join":
+            self.do_join(instance)
+        elif name == "apps":
+            self.do_apps(instance)
+        elif name == "origins":
+            self.do_origins(instance)
+        elif name == "who":
+            self.do_who(instance)
 
     @PROCESS.time()
     def process(self):
@@ -119,12 +218,9 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
             self.logger.info("fact", extra={"fact": instance})
             FACTS.observe(1)
 
-            if (
-                instance["what"].get("command", {}).get("app") == "ledger" and 
-                instance["what"].get("command", {}).get("name") == "join"
-            ):
-                self.do_join(instance)
-                
+            if instance["what"].get("command", {}).get("app") == WHO:
+                self.do_command(instance)
+
             self.redis.xack("ledger/fact", self.group, message[0][1][0][0])
 
     def run(self):

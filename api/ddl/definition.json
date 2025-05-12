@@ -51,9 +51,10 @@
         "store": "act",
         "title": "Act",
         "unique": {
-            "entity_id-app_id": [
+            "entity_id-app_id-when": [
                 "entity_id",
-                "app_id"
+                "app_id",
+                "when"
             ]
         }
     },
@@ -192,11 +193,10 @@
         "store": "fact",
         "title": "Fact",
         "unique": {
-            "entity_id-origin_id-who-when": [
+            "entity_id-origin_id-who": [
                 "entity_id",
                 "origin_id",
-                "who",
-                "when"
+                "who"
             ]
         }
     },
