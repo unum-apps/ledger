@@ -22,21 +22,21 @@ import unum_ledger
 
 WHO = "ledger"
 META = """
-channel: unum-ledger
-description: Base App of an Unum, records and coordinates all
+channel: unifist-unum
+description: The Ledger App, which is the base for this Unum
 commands:
-- name: join
-  description: Join the ledger App and the Unum overall
-- name: leave
-  description: Leave the Ledger App. It'll stop recording you in this Unum.
 - name: apps
-  description: List all the installed Apps in this Unum.
+  description: List all the installed Apps in this Unum
 - name: origins
-  description: List all the installed Apps in this Unum.
+  description: List all the installed Apps in this Unum
 - name: who
-  description: Shows your current name in the Unum
-- name: who {who}
-  description: Changes your current name to {who} in the Unum
+  description: Manages your overall name in the Unum
+  usages:
+  - description: Show yout overall namein the Unum
+  - description: Change your overall name in the Unum to {who}
+    args:
+    - name: who
+      format: remainder
 """
 
 NAME = f"{WHO}-api"

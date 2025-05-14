@@ -74,17 +74,6 @@
                 "store": "who"
             },
             {
-                "default": "active",
-                "kind": "str",
-                "name": "status",
-                "none": false,
-                "options": [
-                    "active",
-                    "inactive"
-                ],
-                "store": "status"
-            },
-            {
                 "kind": "dict",
                 "name": "meta",
                 "none": false,
@@ -124,17 +113,6 @@
                 "name": "who",
                 "none": false,
                 "store": "who"
-            },
-            {
-                "default": "active",
-                "kind": "str",
-                "name": "status",
-                "none": false,
-                "options": [
-                    "active",
-                    "inactive"
-                ],
-                "store": "status"
             },
             {
                 "kind": "dict",
@@ -244,17 +222,6 @@
                 "store": "app_id"
             },
             {
-                "default": "active",
-                "kind": "str",
-                "name": "status",
-                "none": false,
-                "options": [
-                    "active",
-                    "inactive"
-                ],
-                "store": "status"
-            },
-            {
                 "kind": "dict",
                 "name": "what",
                 "none": false,
@@ -297,17 +264,6 @@
                 "store": "who"
             },
             {
-                "default": "active",
-                "kind": "str",
-                "name": "status",
-                "none": false,
-                "options": [
-                    "active",
-                    "inactive"
-                ],
-                "store": "status"
-            },
-            {
                 "kind": "dict",
                 "name": "meta",
                 "none": false,
@@ -341,17 +297,6 @@
                 "name": "who",
                 "none": false,
                 "store": "who"
-            },
-            {
-                "default": "active",
-                "kind": "str",
-                "name": "status",
-                "none": false,
-                "options": [
-                    "active",
-                    "inactive"
-                ],
-                "store": "status"
             },
             {
                 "kind": "dict",
@@ -399,17 +344,6 @@
                 "name": "who",
                 "none": false,
                 "store": "who"
-            },
-            {
-                "default": "active",
-                "kind": "str",
-                "name": "status",
-                "none": false,
-                "options": [
-                    "active",
-                    "inactive"
-                ],
-                "store": "status"
             },
             {
                 "kind": "dict",

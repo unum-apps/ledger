@@ -18,16 +18,24 @@ class Unum(Base):
 
     id = int
     who = str   # unique way to identify
+    status = [  # Whether to use this one or not
+        "active",
+        "inactive"
+    ]
     meta = dict # any special weird data
 
 class Entity(Base):
     """
-    Entity is a person. 
+    Entity is a person.
     """
 
     id = int
     unum_id = int   # The Unum this entity is a part of
     who = str       # unique way to identity this entity
+    status = [      # Whether to use this one or not
+        "active",
+        "inactive"
+    ]
     meta = dict     # any special weird data
 
 relations.OneToMany(Unum, Entity)
@@ -39,6 +47,23 @@ class App(Base):
 
     id = int
     who = str   # unique way to identity this app, class method in this cases
+    status = [  # Whether to use this one or not
+        "active",
+        "inactive"
+    ]
+    meta = dict # any special weird data
+
+class Origin(Base):
+    """
+    Origin something like Discord, BlueSky and how to handle it
+    """
+
+    id = int
+    who = str   # unique way to identity this origin, class method in this cases
+    status = [  # Whether to use this one or not
+        "active",
+        "inactive"
+    ]
     meta = dict # any special weird data
 
 class Act(Base):
@@ -59,15 +84,6 @@ class Act(Base):
 
 relations.OneToMany(Entity, Act)
 relations.OneToMany(App, Act)
-
-class Origin(Base):
-    """
-    Origin something like Discord, BlueSky and how to handle it
-    """
-
-    id = int
-    who = str   # unique way to identity this origin, class method in this cases
-    meta = dict # any special weird data
 
 class Fact(Base):
     """
@@ -98,6 +114,10 @@ class Witness(Base):
     entity_id = int # Entity this is witnessing
     origin_id = int # Origin this is witnessing
     who = str       # unique way to identity this witness, account id, etc
+    status = [      # Whether to use this one or not
+        "active",
+        "inactive"
+    ]
     what = dict     # what is allowed from the Origin to the Fact
     meta = dict     # any special weird data
 
@@ -112,6 +132,10 @@ class Herald(Base):
     id = int
     entity_id = int # Entity this is witnessing
     app_id = int    # Origin this is witnessing
+    status = [      # Whether to use this one or not
+        "active",
+        "inactive"
+    ]
     what = dict     # what is allowed fom the Fact to the App
     meta = dict     # any special weird data
 

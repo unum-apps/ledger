@@ -1,0 +1,368 @@
+{
+    "change": {
+        "app": {
+            "definition": {
+                "fields": [
+                    {
+                        "auto": true,
+                        "kind": "int",
+                        "name": "id",
+                        "none": true,
+                        "store": "id"
+                    },
+                    {
+                        "kind": "str",
+                        "name": "who",
+                        "none": false,
+                        "store": "who"
+                    },
+                    {
+                        "kind": "dict",
+                        "name": "meta",
+                        "none": false,
+                        "store": "meta"
+                    }
+                ],
+                "id": "id",
+                "index": {},
+                "name": "app",
+                "schema": "ledger",
+                "source": "ledger",
+                "store": "app",
+                "title": "App",
+                "unique": {
+                    "who": [
+                        "who"
+                    ]
+                }
+            },
+            "migration": {
+                "fields": {
+                    "add": [
+                        {
+                            "default": "active",
+                            "kind": "str",
+                            "name": "status",
+                            "none": false,
+                            "options": [
+                                "active",
+                                "inactive"
+                            ],
+                            "store": "status"
+                        }
+                    ]
+                }
+            }
+        },
+        "entity": {
+            "definition": {
+                "fields": [
+                    {
+                        "auto": true,
+                        "kind": "int",
+                        "name": "id",
+                        "none": true,
+                        "store": "id"
+                    },
+                    {
+                        "kind": "int",
+                        "name": "unum_id",
+                        "none": true,
+                        "store": "unum_id"
+                    },
+                    {
+                        "kind": "str",
+                        "name": "who",
+                        "none": false,
+                        "store": "who"
+                    },
+                    {
+                        "kind": "dict",
+                        "name": "meta",
+                        "none": false,
+                        "store": "meta"
+                    }
+                ],
+                "id": "id",
+                "index": {},
+                "name": "entity",
+                "schema": "ledger",
+                "source": "ledger",
+                "store": "entity",
+                "title": "Entity",
+                "unique": {
+                    "unum_id-who": [
+                        "unum_id",
+                        "who"
+                    ]
+                }
+            },
+            "migration": {
+                "fields": {
+                    "add": [
+                        {
+                            "default": "active",
+                            "kind": "str",
+                            "name": "status",
+                            "none": false,
+                            "options": [
+                                "active",
+                                "inactive"
+                            ],
+                            "store": "status"
+                        }
+                    ]
+                }
+            }
+        },
+        "herald": {
+            "definition": {
+                "fields": [
+                    {
+                        "auto": true,
+                        "kind": "int",
+                        "name": "id",
+                        "none": true,
+                        "store": "id"
+                    },
+                    {
+                        "kind": "int",
+                        "name": "entity_id",
+                        "none": true,
+                        "store": "entity_id"
+                    },
+                    {
+                        "kind": "int",
+                        "name": "app_id",
+                        "none": true,
+                        "store": "app_id"
+                    },
+                    {
+                        "kind": "dict",
+                        "name": "what",
+                        "none": false,
+                        "store": "what"
+                    },
+                    {
+                        "kind": "dict",
+                        "name": "meta",
+                        "none": false,
+                        "store": "meta"
+                    }
+                ],
+                "id": "id",
+                "index": {},
+                "name": "herald",
+                "schema": "ledger",
+                "source": "ledger",
+                "store": "herald",
+                "title": "Herald",
+                "unique": {
+                    "entity_id-app_id": [
+                        "entity_id",
+                        "app_id"
+                    ]
+                }
+            },
+            "migration": {
+                "fields": {
+                    "add": [
+                        {
+                            "default": "active",
+                            "kind": "str",
+                            "name": "status",
+                            "none": false,
+                            "options": [
+                                "active",
+                                "inactive"
+                            ],
+                            "store": "status"
+                        }
+                    ]
+                }
+            }
+        },
+        "origin": {
+            "definition": {
+                "fields": [
+                    {
+                        "auto": true,
+                        "kind": "int",
+                        "name": "id",
+                        "none": true,
+                        "store": "id"
+                    },
+                    {
+                        "kind": "str",
+                        "name": "who",
+                        "none": false,
+                        "store": "who"
+                    },
+                    {
+                        "kind": "dict",
+                        "name": "meta",
+                        "none": false,
+                        "store": "meta"
+                    }
+                ],
+                "id": "id",
+                "index": {},
+                "name": "origin",
+                "schema": "ledger",
+                "source": "ledger",
+                "store": "origin",
+                "title": "Origin",
+                "unique": {
+                    "who": [
+                        "who"
+                    ]
+                }
+            },
+            "migration": {
+                "fields": {
+                    "add": [
+                        {
+                            "default": "active",
+                            "kind": "str",
+                            "name": "status",
+                            "none": false,
+                            "options": [
+                                "active",
+                                "inactive"
+                            ],
+                            "store": "status"
+                        }
+                    ]
+                }
+            }
+        },
+        "unum": {
+            "definition": {
+                "fields": [
+                    {
+                        "auto": true,
+                        "kind": "int",
+                        "name": "id",
+                        "none": true,
+                        "store": "id"
+                    },
+                    {
+                        "kind": "str",
+                        "name": "who",
+                        "none": false,
+                        "store": "who"
+                    },
+                    {
+                        "kind": "dict",
+                        "name": "meta",
+                        "none": false,
+                        "store": "meta"
+                    }
+                ],
+                "id": "id",
+                "index": {},
+                "name": "unum",
+                "schema": "ledger",
+                "source": "ledger",
+                "store": "unum",
+                "title": "Unum",
+                "unique": {
+                    "who": [
+                        "who"
+                    ]
+                }
+            },
+            "migration": {
+                "fields": {
+                    "add": [
+                        {
+                            "default": "active",
+                            "kind": "str",
+                            "name": "status",
+                            "none": false,
+                            "options": [
+                                "active",
+                                "inactive"
+                            ],
+                            "store": "status"
+                        }
+                    ]
+                }
+            }
+        },
+        "witness": {
+            "definition": {
+                "fields": [
+                    {
+                        "auto": true,
+                        "kind": "int",
+                        "name": "id",
+                        "none": true,
+                        "store": "id"
+                    },
+                    {
+                        "kind": "int",
+                        "name": "entity_id",
+                        "none": true,
+                        "store": "entity_id"
+                    },
+                    {
+                        "kind": "int",
+                        "name": "origin_id",
+                        "none": true,
+                        "store": "origin_id"
+                    },
+                    {
+                        "kind": "str",
+                        "name": "who",
+                        "none": false,
+                        "store": "who"
+                    },
+                    {
+                        "kind": "dict",
+                        "name": "what",
+                        "none": false,
+                        "store": "what"
+                    },
+                    {
+                        "kind": "dict",
+                        "name": "meta",
+                        "none": false,
+                        "store": "meta"
+                    }
+                ],
+                "id": "id",
+                "index": {},
+                "name": "witness",
+                "schema": "ledger",
+                "source": "ledger",
+                "store": "witness",
+                "title": "Witness",
+                "unique": {
+                    "entity_id-origin_id-who": [
+                        "entity_id",
+                        "origin_id",
+                        "who"
+                    ]
+                }
+            },
+            "migration": {
+                "fields": {
+                    "add": [
+                        {
+                            "default": "active",
+                            "kind": "str",
+                            "name": "status",
+                            "none": false,
+                            "options": [
+                                "active",
+                                "inactive"
+                            ],
+                            "store": "status"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

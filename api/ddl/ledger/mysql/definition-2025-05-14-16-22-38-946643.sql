@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS `ledger`.`act` (
 CREATE TABLE IF NOT EXISTS `ledger`.`app` (
   `id` BIGINT AUTO_INCREMENT,
   `who` VARCHAR(255) NOT NULL,
-  `status` VARCHAR(255) NOT NULL DEFAULT 'active',
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE `who` (`who`)
@@ -23,7 +22,6 @@ CREATE TABLE IF NOT EXISTS `ledger`.`entity` (
   `id` BIGINT AUTO_INCREMENT,
   `unum_id` BIGINT,
   `who` VARCHAR(255) NOT NULL,
-  `status` VARCHAR(255) NOT NULL DEFAULT 'active',
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE `unum_id_who` (`unum_id`,`who`)
@@ -46,7 +44,6 @@ CREATE TABLE IF NOT EXISTS `ledger`.`herald` (
   `id` BIGINT AUTO_INCREMENT,
   `entity_id` BIGINT,
   `app_id` BIGINT,
-  `status` VARCHAR(255) NOT NULL DEFAULT 'active',
   `what` JSON NOT NULL,
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),
@@ -56,7 +53,6 @@ CREATE TABLE IF NOT EXISTS `ledger`.`herald` (
 CREATE TABLE IF NOT EXISTS `ledger`.`origin` (
   `id` BIGINT AUTO_INCREMENT,
   `who` VARCHAR(255) NOT NULL,
-  `status` VARCHAR(255) NOT NULL DEFAULT 'active',
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE `who` (`who`)
@@ -65,7 +61,6 @@ CREATE TABLE IF NOT EXISTS `ledger`.`origin` (
 CREATE TABLE IF NOT EXISTS `ledger`.`unum` (
   `id` BIGINT AUTO_INCREMENT,
   `who` VARCHAR(255) NOT NULL,
-  `status` VARCHAR(255) NOT NULL DEFAULT 'active',
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE `who` (`who`)
@@ -76,7 +71,6 @@ CREATE TABLE IF NOT EXISTS `ledger`.`witness` (
   `entity_id` BIGINT,
   `origin_id` BIGINT,
   `who` VARCHAR(255) NOT NULL,
-  `status` VARCHAR(255) NOT NULL DEFAULT 'active',
   `what` JSON NOT NULL,
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),

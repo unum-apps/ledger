@@ -57,15 +57,30 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         ):
             self.redis.xgroup_create("ledger/fact", self.group, mkstream=True)
 
+    def has_herald(self, entity_id):
+        """
+        Checks to see if an enity has a Herald
+        """
+
+        return (
+            unum_ledger.Entity.one(
+                entity_id=entity_id,
+                status="active"
+            ).retrieve(False) is not None
+            and
+            unum_ledger.Herald.one(
+                entity_id=entity_id,
+                app_id=self.app.id,
+                status="active"
+            ).retrieve(False) is not None
+        )
+
     def act(self, **act):
         """
         Creates an act if needed
         """
 
-        if unum_ledger.Herald.one(
-            entity_id=act["entity_id"],
-            app_id=self.app.id
-        ).retrieve(False) is None:
+        if not self.has_herald(act["entity_id"]):
             return
 
         act = unum_ledger.Act(**act).create()
@@ -81,7 +96,8 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
 
         unum_ledger.Herald(
             entity_id=instance["what"]["entity_id"],
-            app_id=self.app.id
+            app_id=self.app.id,
+            status="active"
         ).create()
 
         self.act(
@@ -173,12 +189,9 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         Perform the who
         """
 
-        name = instance["what"].get("command", {}).get("name") 
+        name = instance["what"].get("command", {}).get("name")
 
-        if name != "join" and unum_ledger.Herald.one(
-            entity_id=instance["what"].get("entity_id"),
-            app_id=self.app.id
-        ).retrieve(False) is None:
+        if name != "join" and not self.has_herald(instance["what"].get("entity_id")):
             return
 
         if name == "join":
