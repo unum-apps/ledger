@@ -22,8 +22,9 @@ import unum_ledger
 
 WHO = "ledger"
 META = """
+title: the Ledger App
 channel: unifist-unum
-description: The Ledger App, which is the base for this Unum
+description: Base for this Unum, tracks and records all that's allowed
 commands:
 - name: apps
   description: List all the installed Apps in this Unum

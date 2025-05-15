@@ -57,14 +57,14 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         ):
             self.redis.xgroup_create("ledger/fact", self.group, mkstream=True)
 
-    def has_herald(self, entity_id):
+    def is_active(self, entity_id):
         """
         Checks to see if an enity has a Herald
         """
 
         return (
             unum_ledger.Entity.one(
-                entity_id=entity_id,
+                id=entity_id,
                 status="active"
             ).retrieve(False) is not None
             and
@@ -80,7 +80,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         Creates an act if needed
         """
 
-        if not self.has_herald(act["entity_id"]):
+        if not self.is_active(act["entity_id"]):
             return
 
         act = unum_ledger.Act(**act).create()
@@ -191,7 +191,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
 
         name = instance["what"].get("command", {}).get("name")
 
-        if name != "join" and not self.has_herald(instance["what"].get("entity_id")):
+        if name != "join" and not self.is_active(instance["what"].get("entity_id")):
             return
 
         if name == "join":
@@ -231,7 +231,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
             self.logger.info("fact", extra={"fact": instance})
             FACTS.observe(1)
 
-            if instance["what"].get("command", {}).get("app") == WHO:
+            if WHO in instance["what"].get("command", {}).get("apps", []):
                 self.do_command(instance)
 
             self.redis.xack("ledger/fact", self.group, message[0][1][0][0])
