@@ -50,13 +50,7 @@
         "source": "ledger",
         "store": "act",
         "title": "Act",
-        "unique": {
-            "entity_id-app_id-when": [
-                "entity_id",
-                "app_id",
-                "when"
-            ]
-        }
+        "unique": {}
     },
     "app": {
         "fields": [
@@ -214,13 +208,7 @@
         "source": "ledger",
         "store": "fact",
         "title": "Fact",
-        "unique": {
-            "entity_id-origin_id-who": [
-                "entity_id",
-                "origin_id",
-                "who"
-            ]
-        }
+        "unique": {}
     },
     "herald": {
         "fields": [

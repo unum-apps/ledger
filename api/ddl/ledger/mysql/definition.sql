@@ -6,8 +6,7 @@ CREATE TABLE IF NOT EXISTS `ledger`.`act` (
   `what` JSON NOT NULL,
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `when` (`when`),
-  UNIQUE `entity_id_app_id_when` (`entity_id`,`app_id`,`when`)
+  INDEX `when` (`when`)
 );
 
 CREATE TABLE IF NOT EXISTS `ledger`.`app` (
@@ -38,8 +37,7 @@ CREATE TABLE IF NOT EXISTS `ledger`.`fact` (
   `what` JSON NOT NULL,
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `when` (`when`),
-  UNIQUE `entity_id_origin_id_who` (`entity_id`,`origin_id`,`who`)
+  INDEX `when` (`when`)
 );
 
 CREATE TABLE IF NOT EXISTS `ledger`.`herald` (

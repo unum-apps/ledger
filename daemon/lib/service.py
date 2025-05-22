@@ -89,31 +89,62 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         ACTS.observe(1)
         self.redis.xadd("ledger/act", fields={"act": json.dumps(act.export())})
 
-    def do_join(self, instance):
+    def decode_time(self, arg):
         """
-        Perform the join
+        Decodes 3d2h3m format to seconds
+
         """
 
-        unum_ledger.Herald(
-            entity_id=instance["what"]["entity_id"],
-            app_id=self.app.id,
-            status="active"
-        ).create()
+        seconds = 0
+        current = ""
 
-        self.act(
-            entity_id=instance["what"]["entity_id"],
-            app_id=self.app.id,
-            when=int(time.time()),
-            what={
-                "base": "message",
-                "kind": "channel",
-                "text": f"Welcome to the Ledger App {{entity:{instance['what']['entity_id']}}}!",
-                "channel": self.app.meta__channel
-            },
-            meta=instance["meta"]
-        )
+        for letter in arg:
 
-    def do_apps(self, instance):
+            if '0' <= letter and letter <= '9':
+                current += letter
+            elif current and letter == 'd':
+                seconds += int(current) * 24*60*60
+                current = ""
+            elif current and letter == 'h':
+                seconds += int(current) * 60*60
+                current = ""
+            elif current and letter == 'm':
+                seconds += int(current) * 60
+                current = ""
+
+        return seconds
+
+    def encode_time(self, seconds):
+        """
+        Encodes seconds to 3d2h3m format
+        """
+
+        # Start with a blank string
+
+        arg = ""
+
+        # Determine and peel off the days, hours, and minutes
+
+        days = int(seconds/(24*60*60))
+        seconds -= days * 24*60*60
+        hours = int(seconds /(60*60))
+        seconds -= hours * 60*60
+        mins = int(seconds/(60))
+
+        # If there's a value, add it with its letter
+
+        if days:
+            arg += f"{days}d"
+
+        if hours:
+            arg += f"{hours}h"
+
+        if mins:
+            arg += f"{mins}m"
+
+        return arg
+
+    def command_apps(self, instance):
         """
         Perform the apps
         """
@@ -121,22 +152,20 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         text = "Current Apps are:"
 
         for app in unum_ledger.App.many():
-            text += f"\n{app.who} - {app.meta__description} - {app.meta__channel} channel"
+            text += f"\n- **{app.who}** - *{app.meta__description}* - {{channel:{app.meta__channel}}}"
 
         self.act(
             entity_id=instance["what"]["entity_id"],
             app_id=self.app.id,
             when=int(time.time()),
             what={
-                "base": "message",
-                "kind": "channel",
-                "text": text,
-                "channel": self.app.meta__channel
+                "base": "statement",
+                "text": text
             },
-            meta=instance["meta"]
+            meta={"ancestor": instance["meta"]}
         )
 
-    def do_origins(self, instance):
+    def command_origins(self, instance):
         """
         Perform the origins
         """
@@ -144,44 +173,105 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         text = "Current Origins are:"
 
         for origin in unum_ledger.Origin.many():
-            text += f"\n{origin.who} - {origin.meta__description} - {origin.meta__channel} channel"
+            text += f"\n- **{origin.who}** - *{origin.meta__description}* - {{channel:{origin.meta__channel}}}"
 
         self.act(
             entity_id=instance["what"]["entity_id"],
             app_id=self.app.id,
             when=int(time.time()),
             what={
-                "base": "message",
-                "kind": "channel",
-                "text": text,
-                "channel": self.app.meta__channel
+                "base": "statement",
+                "text": text
             },
-            meta=instance["meta"]
+            meta={"ancestor": instance["meta"]}
         )
 
-    def do_who(self, instance):
+    def command_name(self, instance):
         """
         Perform the who
         """
 
-        if instance["what"]["command"].get("args"):
-            unum_ledger.Entity.one(instance["what"]["entity_id"]).set(who=" ".join(instance["what"]["command"]["args"])).update()
+        entity_id = instance["what"]["entity_id"]
+        usage = instance["what"]["usage"]
+        values = instance["what"].get("values",{})
+        base = "statement"
+        meme = "*"
 
-        who = unum_ledger.Entity.one(instance["what"]["entity_id"]).who
+        if usage == "change":
+            meme = "+"
+            base = "reaction"
+            unum_ledger.Entity.one(entity_id).set(who=values["who"]).update()
 
-        text = f"{{entity:{instance['what']['entity_id']}}}, your name is {who}."
+        who = unum_ledger.Entity.one(entity_id).who
+
+        text = f"your name is {who}."
 
         self.act(
-            entity_id=instance["what"]["entity_id"],
+            entity_id=entity_id,
             app_id=self.app.id,
             when=int(time.time()),
             what={
-                "base": "message",
-                "kind": "channel",
-                "text": text,
-                "channel": self.app.meta__channel
+                "meme": meme,
+                "base": base,
+                "text": text
             },
-            meta=instance["meta"]
+            meta={"ancestor": instance["meta"]}
+        )
+
+    def command_talk(self, instance):
+        """
+        Joins the Unum, Ledger, and Discord Origin
+        """
+
+        entity_id = instance["what"]["entity_id"]
+        values = instance["what"].get("values", {})
+        change = False
+        base = "statement"
+        meme = "*"
+
+        entity = unum_ledger.Entity.one(entity_id)
+
+        # Defaults
+
+        if not entity.meta__talk:
+            entity.meta__talk = {
+                "after": self.decode_time("8h"),
+                "before": self.decode_time("20h"),
+                "kind": "public",
+                "noise": "loud"
+            }
+            change = True
+
+        # Updates
+
+        if values:
+            entity.meta["talk"].update(values)
+            base = "reaction"
+            meme = "+"
+            change = True
+
+        # Change if needed
+
+        if change:
+            entity.update()
+
+        after = self.encode_time(entity.meta__talk__after)
+        before = self.encode_time(entity.meta__talk__before)
+        kind = entity.meta__talk__kind
+        noise = entity.meta__talk__noise
+
+        text = f"I will {kind}ly ping and react {noise}ly to you after {after} and before {before} each day"
+
+        self.act(
+            entity_id=entity_id,
+            app_id=self.app.id,
+            when=int(time.time()),
+            what={
+                "base": base,
+                "meme": meme,
+                "text": text
+            },
+            meta={"ancestor": instance["meta"]}
         )
 
     def do_command(self, instance):
@@ -189,19 +279,16 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         Perform the who
         """
 
-        name = instance["what"].get("command", {}).get("name")
+        name = instance["what"]["command"]
 
-        if name != "join" and not self.is_active(instance["what"].get("entity_id")):
-            return
-
-        if name == "join":
-            self.do_join(instance)
-        elif name == "apps":
-            self.do_apps(instance)
+        if name == "apps":
+            self.command_apps(instance)
         elif name == "origins":
-            self.do_origins(instance)
-        elif name == "who":
-            self.do_who(instance)
+            self.command_origins(instance)
+        elif name == "name":
+            self.command_name(instance)
+        elif name == "talk":
+            self.command_talk(instance)
 
     @PROCESS.time()
     def process(self):
@@ -231,7 +318,13 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
             self.logger.info("fact", extra={"fact": instance})
             FACTS.observe(1)
 
-            if WHO in instance["what"].get("command", {}).get("apps", []):
+            if (
+                instance["what"].get("command") and
+                WHO in instance["what"].get("apps", []) and
+                self.is_active(instance["what"].get("entity_id")) and
+                not instance["what"].get("error") and
+                not instance["what"].get("errors")
+            ):
                 self.do_command(instance)
 
             self.redis.xack("ledger/fact", self.group, message[0][1][0][0])

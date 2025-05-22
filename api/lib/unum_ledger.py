@@ -78,7 +78,7 @@ class Act(Base):
     what = dict         # playload of the entire Act from the App
     meta = dict         # any special weird data
 
-    UNIQUE = None
+    UNIQUE = False
     INDEX = "when"
     ORDER = "-when"
 
@@ -98,7 +98,7 @@ class Fact(Base):
     what = dict         # playload of the entire fact from the Origin
     meta = dict         # any special weird data
 
-    UNIQUE = None
+    UNIQUE = False
     INDEX = "when"
     ORDER = "-when"
 

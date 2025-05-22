@@ -22,22 +22,66 @@ import unum_ledger
 
 WHO = "ledger"
 META = """
-title: the Ledger App
+title: this Unum
 channel: unifist-unum
 description: Base for this Unum, tracks and records all that's allowed
+help: |
+  This does a lot of cool shit with this Unum
 commands:
 - name: apps
+  meme: '?'
   description: List all the installed Apps in this Unum
 - name: origins
+  meme: '?'
   description: List all the installed Apps in this Unum
-- name: who
-  description: Manages your overall name in the Unum
+- name: name
+  description: Manages your overall name in this Unum
   usages:
-  - description: Show yout overall namein the Unum
-  - description: Change your overall name in the Unum to {who}
+  - name: current
+    meme: '?'
+    description: Show yout current name in the Unum
+  - name: change
+    meme: '!'
+    description: Change your name in the Unum to {who}
     args:
     - name: who
       format: remainder
+- name: talk
+  description: Manage notifications in this Unum
+  usages:
+  - name: range
+    meme: '!'
+    description: I will reach out to you after {after} and before {before} each day (assumes ET)
+    args:
+    - name: after
+      description: I will reach out to you after {after} each day
+      format: duration
+    - name: before
+      description: I will reach out to you before {before} each day
+      format: duration
+  - name: ping
+    meme: '!'
+    description: I will ping you {kind}ly
+    args:
+    - name: kind
+      description: Where I will ping you
+      valids:
+      - private: I will ping you in private messages
+      - public: I will ping you in public channels
+  - name: react
+    meme: '!'
+    description: I will react {noise}ly
+    args:
+    - name: noise
+      description: How I will react to you
+      valids:
+      - loud: I will react with comments with you @'d
+      - calm: I will react with comments with your name only
+      - quiet: I will react with an eomji unless errors
+      - silent: I will react only when errors
+  - name: current
+    meme: '?'
+    description: Show current comms
 """
 
 NAME = f"{WHO}-api"
