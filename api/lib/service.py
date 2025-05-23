@@ -36,6 +36,12 @@ commands:
   description: List all the installed Apps in this Unum
 - name: name
   description: Manages your overall name in this Unum
+  examples:
+  - meme: '?'
+    description: See what you name is right now
+  - meme: '!'
+    args: '- Cool Person'
+    description: Set you name to Cool Person
   usages:
   - name: current
     meme: '?'

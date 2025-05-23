@@ -210,6 +210,78 @@
         "title": "Fact",
         "unique": {}
     },
+    "feat": {
+        "fields": [
+            {
+                "auto": true,
+                "kind": "int",
+                "name": "id",
+                "none": true,
+                "store": "id"
+            },
+            {
+                "kind": "int",
+                "name": "entity_id",
+                "none": true,
+                "store": "entity_id"
+            },
+            {
+                "kind": "str",
+                "name": "who",
+                "none": false,
+                "store": "who"
+            },
+            {
+                "default": "requested",
+                "kind": "str",
+                "name": "status",
+                "none": false,
+                "options": [
+                    "requested",
+                    "accepted",
+                    "completed",
+                    "rejected",
+                    "excepted"
+                ],
+                "store": "status"
+            },
+            {
+                "kind": "int",
+                "name": "when",
+                "none": true,
+                "store": "when"
+            },
+            {
+                "kind": "dict",
+                "name": "what",
+                "none": false,
+                "store": "what"
+            },
+            {
+                "kind": "dict",
+                "name": "meta",
+                "none": false,
+                "store": "meta"
+            }
+        ],
+        "id": "id",
+        "index": {
+            "when": [
+                "when"
+            ]
+        },
+        "name": "feat",
+        "schema": "ledger",
+        "source": "ledger",
+        "store": "feat",
+        "title": "Feat",
+        "unique": {
+            "entity_id-who": [
+                "entity_id",
+                "who"
+            ]
+        }
+    },
     "herald": {
         "fields": [
             {
@@ -314,6 +386,134 @@
                 "who"
             ]
         }
+    },
+    "scat": {
+        "fields": [
+            {
+                "auto": true,
+                "kind": "int",
+                "name": "id",
+                "none": true,
+                "store": "id"
+            },
+            {
+                "kind": "int",
+                "name": "entity_id",
+                "none": true,
+                "store": "entity_id"
+            },
+            {
+                "default": "?",
+                "kind": "str",
+                "name": "who",
+                "none": false,
+                "options": [
+                    "?",
+                    "+",
+                    "*",
+                    "-",
+                    "!"
+                ],
+                "store": "who"
+            },
+            {
+                "kind": "int",
+                "name": "when",
+                "none": true,
+                "store": "when"
+            },
+            {
+                "kind": "dict",
+                "name": "what",
+                "none": false,
+                "store": "what"
+            },
+            {
+                "kind": "dict",
+                "name": "meta",
+                "none": false,
+                "store": "meta"
+            }
+        ],
+        "id": "id",
+        "index": {
+            "when": [
+                "when"
+            ]
+        },
+        "name": "scat",
+        "schema": "ledger",
+        "source": "ledger",
+        "store": "scat",
+        "title": "Scat",
+        "unique": {}
+    },
+    "task": {
+        "fields": [
+            {
+                "auto": true,
+                "kind": "int",
+                "name": "id",
+                "none": true,
+                "store": "id"
+            },
+            {
+                "kind": "int",
+                "name": "entity_id",
+                "none": true,
+                "store": "entity_id"
+            },
+            {
+                "kind": "str",
+                "name": "who",
+                "none": false,
+                "store": "who"
+            },
+            {
+                "default": "requested",
+                "kind": "str",
+                "name": "status",
+                "none": false,
+                "options": [
+                    "requested",
+                    "accepted",
+                    "completed",
+                    "rejected",
+                    "excepted"
+                ],
+                "store": "status"
+            },
+            {
+                "kind": "int",
+                "name": "when",
+                "none": true,
+                "store": "when"
+            },
+            {
+                "kind": "dict",
+                "name": "what",
+                "none": false,
+                "store": "what"
+            },
+            {
+                "kind": "dict",
+                "name": "meta",
+                "none": false,
+                "store": "meta"
+            }
+        ],
+        "id": "id",
+        "index": {
+            "when": [
+                "when"
+            ]
+        },
+        "name": "task",
+        "schema": "ledger",
+        "source": "ledger",
+        "store": "task",
+        "title": "Task",
+        "unique": {}
     },
     "unum": {
         "fields": [

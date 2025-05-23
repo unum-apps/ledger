@@ -40,6 +40,19 @@ CREATE TABLE IF NOT EXISTS `ledger`.`fact` (
   INDEX `when` (`when`)
 );
 
+CREATE TABLE IF NOT EXISTS `ledger`.`feat` (
+  `id` BIGINT AUTO_INCREMENT,
+  `entity_id` BIGINT,
+  `who` VARCHAR(255) NOT NULL,
+  `status` VARCHAR(255) NOT NULL DEFAULT 'requested',
+  `when` BIGINT,
+  `what` JSON NOT NULL,
+  `meta` JSON NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `when` (`when`),
+  UNIQUE `entity_id_who` (`entity_id`,`who`)
+);
+
 CREATE TABLE IF NOT EXISTS `ledger`.`herald` (
   `id` BIGINT AUTO_INCREMENT,
   `entity_id` BIGINT,
@@ -58,6 +71,29 @@ CREATE TABLE IF NOT EXISTS `ledger`.`origin` (
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE `who` (`who`)
+);
+
+CREATE TABLE IF NOT EXISTS `ledger`.`scat` (
+  `id` BIGINT AUTO_INCREMENT,
+  `entity_id` BIGINT,
+  `who` VARCHAR(255) NOT NULL DEFAULT '?',
+  `when` BIGINT,
+  `what` JSON NOT NULL,
+  `meta` JSON NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `when` (`when`)
+);
+
+CREATE TABLE IF NOT EXISTS `ledger`.`task` (
+  `id` BIGINT AUTO_INCREMENT,
+  `entity_id` BIGINT,
+  `who` VARCHAR(255) NOT NULL,
+  `status` VARCHAR(255) NOT NULL DEFAULT 'requested',
+  `when` BIGINT,
+  `what` JSON NOT NULL,
+  `meta` JSON NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `when` (`when`)
 );
 
 CREATE TABLE IF NOT EXISTS `ledger`.`unum` (

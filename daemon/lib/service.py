@@ -290,6 +290,21 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         elif name == "talk":
             self.command_talk(instance)
 
+    def do_feats(self, instance):
+        """
+        Complete feats if so
+        """
+
+        entity_id = instance["what"]["entity_id"]
+
+        for feat in unum_ledger.Feat.many(entity_id=entity_id, status__in=["requested", "accepted"]):
+
+            # Oh yes this is horribly inefficient but it's like no code
+
+            if unum_ledger.Fact.one(id=instance["id"], **feat.what).retrieve(False):
+                feat.status = "completed"
+                feat.update()
+
     @PROCESS.time()
     def process(self):
         """
@@ -319,13 +334,18 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
             FACTS.observe(1)
 
             if (
-                instance["what"].get("command") and
-                WHO in instance["what"].get("apps", []) and
                 self.is_active(instance["what"].get("entity_id")) and
                 not instance["what"].get("error") and
                 not instance["what"].get("errors")
             ):
-                self.do_command(instance)
+
+                if (
+                    instance["what"].get("command") and
+                    WHO in instance["what"].get("apps", []) and
+                ):
+                    self.do_command(instance)
+
+                self.do_feats(instance)
 
             self.redis.xack("ledger/fact", self.group, message[0][1][0][0])
 

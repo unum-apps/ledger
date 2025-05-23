@@ -40,6 +40,79 @@ class Entity(Base):
 
 relations.OneToMany(Unum, Entity)
 
+class Scat(Base):
+    """
+    Scat, a record of what fell through the cracks
+    """
+
+    id = int
+    entity_id = int # Entity this is directed too
+    who  = [        # the related meme in ascii form
+        "?",
+        "+",
+        "*",
+        "-",
+        "!"
+    ]
+    when = int      # epoch time this happened
+    what = dict     # playload of the entire Act from the App
+    meta = dict     # any special weird data
+
+    UNIQUE = False
+    INDEX = "when"
+    ORDER = "-when"
+
+relations.OneToMany(Entity, Scat)
+
+class Task(Base):
+    """
+    Task, a record of what's todo and done
+    """
+
+    id = int
+    entity_id = int   # Entity this is directed too
+    who  = str        # General string for reference
+    status = [        # Teh status of the feat
+        "requested",
+        "accepted",
+        "completed",
+        "rejected",
+        "excepted"
+    ]
+    when = int        # epoch time this happened
+    what = dict       # playload of the entire Act from the App
+    meta = dict       # any special weird data
+
+    UNIQUE = False
+    INDEX = "when"
+    ORDER = "-when"
+
+relations.OneToMany(Entity, Task)
+
+class Feat(Base):
+    """
+    Feat, a record of what was acheived
+    """
+
+    id = int
+    entity_id = int   # Entity this is directed too
+    who  = str        # id for reference
+    status = [        # Teh status of the feat
+        "requested",
+        "accepted",
+        "completed",
+        "rejected",
+        "excepted"
+    ]
+    when = int        # epoch time this happened
+    what = dict       # playload of the entire Act from the App
+    meta = dict       # any special weird data
+
+    INDEX = "when"
+    ORDER = "-when"
+
+relations.OneToMany(Entity, Feat)
+
 class App(Base):
     """
     App something like TehFeelz, PokeMeme and how to handle it
