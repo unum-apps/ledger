@@ -26,7 +26,17 @@ title: this Unum
 channel: unifist-unum
 description: Base for this Unum, tracks and records all that's allowed
 help: |
-  This does a lot of cool shit with this Unum
+  Welcome to this Unum. An Unum is a community Union born of American ideals: of the People, by the People,
+  and for the People. We make our own Rules. We build our Infrastructure. We forge our own Destiny.
+
+  I am the Ledger App, the base of this Unum. I track Entities, what Apps and Origins are installed. Here you can
+  see all that and control how I talk to you, even what I'll call you.
+
+  I am designed for self service. By simply asking for help, I am aware of you and I have assigned you feats
+  to accomplish, mainly learning how to learn. Continue to ask for help, starting with help itself. Below shows how.
+
+  While I am aware of you, I am not tracking everything you say. You need to join for that. Good luck on learning
+  how.
 commands:
 - name: apps
   meme: '?'

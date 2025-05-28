@@ -295,15 +295,39 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         Complete feats if so
         """
 
+        fact_id = instance["id"]
         entity_id = instance["what"]["entity_id"]
 
-        for feat in unum_ledger.Feat.many(entity_id=entity_id, status__in=["requested", "accepted"]):
+        for feat in unum_ledger.Feat.many(
+            entity_id=entity_id,
+            status__in=["requested", "accepted"],
+            what__source=self.app.who
+        ):
+
+            completed = []
 
             # Oh yes this is horribly inefficient but it's like no code
 
-            if unum_ledger.Fact.one(id=instance["id"], **feat.what).retrieve(False):
+            if feat.what__fact and unum_ledger.Fact.one(id=fact_id, **feat.what__fact).retrieve(False):
                 feat.status = "completed"
                 feat.update()
+                completed.append(feat.what__description)
+
+            if completed:
+                self.act(
+                    entity_id=entity_id,
+                    app_id=self.app.id,
+                    when=int(time.time()),
+                    what={
+                        "base": "statement",
+                        "meme": "*",
+                        "listing": {
+                            "description": "Completed feats:",
+                            "items": completed
+                        }
+                    },
+                    meta={"ancestor": instance["meta"]}
+                )
 
     @PROCESS.time()
     def process(self):
@@ -341,7 +365,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
 
                 if (
                     instance["what"].get("command") and
-                    WHO in instance["what"].get("apps", []) and
+                    WHO in instance["what"].get("apps", [])
                 ):
                     self.do_command(instance)
 
