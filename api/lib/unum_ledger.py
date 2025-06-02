@@ -91,6 +91,13 @@ class Award(Base):
     id = int            # Internal id
     entity_id = int     # Entity this is directed to
     who  = str          # External id, for reference
+    status = [          # The status of the award
+        "requested",
+        "accepted",
+        "completed",
+        "rejected",
+        "excepted"
+    ]
     when = int          # epoch time this happened
     what = dict         # payload of the entire Act from the App
     meta = dict         # any special weird data
