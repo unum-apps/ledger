@@ -16,9 +16,9 @@ class Unum(Base):
     Stores Unums. For now this one. Others will interface later.
     """
 
-    id = int
-    who = str   # unique way to identify
-    status = [  # Whether to use this one or not
+    id = int    # Internal id
+    who = str   # External id
+    status = [  # Whether is using
         "active",
         "inactive"
     ]
@@ -29,10 +29,10 @@ class Entity(Base):
     Entity is a person.
     """
 
-    id = int
+    id = int        # Internal id
     unum_id = int   # The Unum this entity is a part of
-    who = str       # unique way to identity this entity
-    status = [      # Whether to use this one or not
+    who = str       # External id, name
+    status = [      # Whether can use
         "active",
         "inactive"
     ]
@@ -45,17 +45,11 @@ class Scat(Base):
     Scat, a record of what fell through the cracks
     """
 
-    id = int
-    entity_id = int # Entity this is directed too
-    who  = [        # the related meme in ascii form
-        "?",
-        "+",
-        "*",
-        "-",
-        "!"
-    ]
+    id = int        # Internal id
+    entity_id = int # Entity who scatted
+    who = str       # External id, what's being scatted on
     when = int      # epoch time this happened
-    what = dict     # playload of the entire Act from the App
+    what = dict     # payload of the entire Scat
     meta = dict     # any special weird data
 
     UNIQUE = False
@@ -69,18 +63,18 @@ class Task(Base):
     Task, a record of what's todo and done
     """
 
-    id = int
-    entity_id = int   # Entity this is directed too
-    who  = str        # General string for reference
-    status = [        # Teh status of the feat
-        "requested",
-        "accepted",
-        "completed",
-        "rejected",
-        "excepted"
+    id = int            # Internal id
+    entity_id = int     # Entity this is directed to
+    who  = str          # External id, what's being worked on
+    status = [          # The status of the Task
+        "blocked",
+        "inprogress",
+        "done",
+        "wontdo",
+        "imperiled"
     ]
     when = int        # epoch time this happened
-    what = dict       # playload of the entire Act from the App
+    what = dict       # payload of the entire Task
     meta = dict       # any special weird data
 
     UNIQUE = False
@@ -89,37 +83,30 @@ class Task(Base):
 
 relations.OneToMany(Entity, Task)
 
-class Feat(Base):
+class Award(Base):
     """
-    Feat, a record of what was acheived
+    Award, a record of what was achieved
     """
 
-    id = int
-    entity_id = int   # Entity this is directed too
-    who  = str        # id for reference
-    status = [        # Teh status of the feat
-        "requested",
-        "accepted",
-        "completed",
-        "rejected",
-        "excepted"
-    ]
-    when = int        # epoch time this happened
-    what = dict       # playload of the entire Act from the App
-    meta = dict       # any special weird data
+    id = int            # Internal id
+    entity_id = int     # Entity this is directed to
+    who  = str          # External id, for reference
+    when = int          # epoch time this happened
+    what = dict         # payload of the entire Act from the App
+    meta = dict         # any special weird data
 
     INDEX = "when"
     ORDER = "-when"
 
-relations.OneToMany(Entity, Feat)
+relations.OneToMany(Entity, Award)
 
 class App(Base):
     """
     App something like TehFeelz, PokeMeme and how to handle it
     """
 
-    id = int
-    who = str   # unique way to identity this app, class method in this cases
+    id = int    # Internal id
+    who = str   # External id, how to identify
     status = [  # Whether to use this one or not
         "active",
         "inactive"
@@ -131,8 +118,8 @@ class Origin(Base):
     Origin something like Discord, BlueSky and how to handle it
     """
 
-    id = int
-    who = str   # unique way to identity this origin, class method in this cases
+    id = int    # Internal id
+    who = str   # External id, how to identify
     status = [  # Whether to use this one or not
         "active",
         "inactive"
@@ -144,11 +131,11 @@ class Act(Base):
     Act, a record of what needs to happen
     """
 
-    id = int
-    entity_id = int     # Entity this is directed too
+    id = int            # Internal id
+    entity_id = int     # Entity this is directed to
     app_id = int        # App this is referencing
     when = int          # epoch time this happened
-    what = dict         # playload of the entire Act from the App
+    what = dict         # payload of the entire Act from the App
     meta = dict         # any special weird data
 
     UNIQUE = False
@@ -163,13 +150,13 @@ class Fact(Base):
     Fact, a record of what happened from an Origin
     """
 
-    id = int
+    id = int            # Internal id
     entity_id = int     # Entity of the Fact
     origin_id = int     # Origin of the Fact
-    who = str           # unique way to identity the event
+    who = str           # External id
     when = int          # epoch time this happened
-    what = dict         # playload of the entire fact from the Origin
-    meta = dict         # any special weird data
+    what = dict         # The general what was said, words, channel, used by Apps
+    meta = dict         # The specific info what was said, used by Origins
 
     UNIQUE = False
     INDEX = "when"
@@ -180,37 +167,37 @@ relations.OneToMany(Origin, Fact)
 
 class Witness(Base):
     """
-    Witness allows an Origin to write Facts
+    Witness allows an Origin to write Facts and read Acts for an Entity
     """
 
     id = int
     entity_id = int # Entity this is witnessing
     origin_id = int # Origin this is witnessing
-    who = str       # unique way to identity this witness, account id, etc
-    status = [      # Whether to use this one or not
+    who = str       # External ID from originating system (e.g., Discord user ID, GitHub handle)
+    status = [      # Whether in use
         "active",
         "inactive"
     ]
-    what = dict     # what is allowed from the Origin to the Fact
-    meta = dict     # any special weird data
+    what = dict     # Generally what's allowed? Not really used yet.
+    meta = dict     # Specifically what's allowed? Not really used yet.
 
 relations.OneToMany(Entity, Witness)
 relations.OneToMany(Origin, Witness)
 
 class Herald(Base):
     """
-    Narrator allows an App to read Facts
+    Herald allows an App to read Facts and Write Acts for an Entity
     """
 
     id = int
     entity_id = int # Entity this is witnessing
     app_id = int    # Origin this is witnessing
-    status = [      # Whether to use this one or not
+    status = [      # Whether in use
         "active",
         "inactive"
     ]
-    what = dict     # what is allowed fom the Fact to the App
-    meta = dict     # any special weird data
+    what = dict     # Generally what's allowed? Not really used yet.
+    meta = dict     # Specifically what's allowed? Not really used yet.
 
     UNIQUE = ["entity_id", "app_id"]
 

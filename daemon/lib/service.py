@@ -290,15 +290,15 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         elif name == "talk":
             self.command_talk(instance)
 
-    def do_feats(self, instance):
+    def do_awards(self, instance):
         """
-        Complete feats if so
+        Complete awards if so
         """
 
         fact_id = instance["id"]
         entity_id = instance["what"]["entity_id"]
 
-        for feat in unum_ledger.Feat.many(
+        for award in unum_ledger.Award.many(
             entity_id=entity_id,
             status__in=["requested", "accepted"],
             what__source=self.app.who
@@ -308,10 +308,10 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
 
             # Oh yes this is horribly inefficient but it's like no code
 
-            if feat.what__fact and unum_ledger.Fact.one(id=fact_id, **feat.what__fact).retrieve(False):
-                feat.status = "completed"
-                feat.update()
-                completed.append(feat.what__description)
+            if award.what__fact and unum_ledger.Fact.one(id=fact_id, **award.what__fact).retrieve(False):
+                award.status = "completed"
+                award.update()
+                completed.append(award.what__description)
 
             if completed:
                 self.act(
@@ -322,7 +322,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
                         "base": "statement",
                         "meme": "*",
                         "listing": {
-                            "description": "Completed feats:",
+                            "description": "Completed awards:",
                             "items": completed
                         }
                     },
@@ -369,7 +369,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
                 ):
                     self.do_command(instance)
 
-                self.do_feats(instance)
+                self.do_awards(instance)
 
             self.redis.xack("ledger/fact", self.group, message[0][1][0][0])
 
