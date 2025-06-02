@@ -409,20 +409,6 @@
                 "store": "who"
             },
             {
-                "default": "recorded",
-                "kind": "str",
-                "name": "status",
-                "none": false,
-                "options": [
-                    "recorded",
-                    "assigned",
-                    "decided",
-                    "responded",
-                    "received"
-                ],
-                "store": "status"
-            },
-            {
                 "kind": "int",
                 "name": "when",
                 "none": true,

@@ -48,6 +48,13 @@ class Scat(Base):
     id = int        # Internal id
     entity_id = int # Entity who scatted
     who = str       # External id, what's being scatted on
+    status = [      # The status of the scat
+        "recorded",
+        "assigned",
+        "decided",
+        "responded",
+        "received"
+    ]
     when = int      # epoch time this happened
     what = dict     # payload of the entire Scat
     meta = dict     # any special weird data

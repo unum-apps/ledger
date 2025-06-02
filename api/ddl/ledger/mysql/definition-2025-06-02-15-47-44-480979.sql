@@ -77,7 +77,6 @@ CREATE TABLE IF NOT EXISTS `ledger`.`scat` (
   `id` BIGINT AUTO_INCREMENT,
   `entity_id` BIGINT,
   `who` VARCHAR(255) NOT NULL,
-  `status` VARCHAR(255) NOT NULL DEFAULT 'recorded',
   `when` BIGINT,
   `what` JSON NOT NULL,
   `meta` JSON NOT NULL,
