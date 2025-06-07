@@ -290,44 +290,6 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         elif name == "talk":
             self.command_talk(instance)
 
-    def do_awards(self, instance):
-        """
-        Complete awards if so
-        """
-
-        fact_id = instance["id"]
-        entity_id = instance["what"]["entity_id"]
-
-        for award in unum_ledger.Award.many(
-            entity_id=entity_id,
-            status__in=["requested", "accepted"],
-            what__source=self.app.who
-        ):
-
-            completed = []
-
-            # Oh yes this is horribly inefficient but it's like no code
-
-            if award.what__fact and unum_ledger.Fact.one(id=fact_id, **award.what__fact).retrieve(False):
-                award.status = "completed"
-                award.update()
-                completed.append(award.what__description)
-
-            if completed:
-                self.act(
-                    entity_id=entity_id,
-                    app_id=self.app.id,
-                    when=int(time.time()),
-                    what={
-                        "base": "statement",
-                        "meme": "*",
-                        "listing": {
-                            "description": "Completed awards:",
-                            "items": completed
-                        }
-                    },
-                    meta={"ancestor": instance["meta"]}
-                )
 
     @PROCESS.time()
     def process(self):
@@ -368,8 +330,6 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
                     WHO in instance["what"].get("apps", [])
                 ):
                     self.do_command(instance)
-
-                self.do_awards(instance)
 
             self.redis.xack("ledger/fact", self.group, message[0][1][0][0])
 
