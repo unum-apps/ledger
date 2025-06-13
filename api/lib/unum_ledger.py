@@ -11,6 +11,24 @@ class Base(relations.Model):
 
     SOURCE = "ledger"
 
+class Journal(Base):
+    """
+    Universal log table
+    """
+
+    id = int    # Internal id
+    who = str   # External id
+    what = dict # payload of the entire Journal entry you
+    when = int  # epoch time this happened
+    meta = dict # any special weird data
+
+    UNIQUE = False
+    INDEX = {
+        "personal": ["who"],
+        "historical": ["when"]
+    }
+    ORDER = "-when"
+
 class Unum(Base):
     """
     Stores Unums. For now this one. Others will interface later.

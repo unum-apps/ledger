@@ -341,56 +341,6 @@
             ]
         }
     },
-    "journal": {
-        "fields": [
-            {
-                "auto": true,
-                "kind": "int",
-                "name": "id",
-                "none": true,
-                "store": "id"
-            },
-            {
-                "kind": "str",
-                "name": "who",
-                "none": false,
-                "store": "who"
-            },
-            {
-                "kind": "dict",
-                "name": "what",
-                "none": false,
-                "store": "what"
-            },
-            {
-                "kind": "int",
-                "name": "when",
-                "none": true,
-                "store": "when"
-            },
-            {
-                "kind": "dict",
-                "name": "meta",
-                "none": false,
-                "store": "meta"
-            }
-        ],
-        "id": "id",
-        "index": {
-            "historical": [
-                "when"
-            ],
-            "personal": [
-                "who"
-            ]
-        },
-        "name": "journal",
-        "schema": "ledger",
-        "source": "ledger",
-        "store": "journal",
-        "title": "Journal",
-        "unique": {}
-    },
     "origin": {
         "fields": [
             {
