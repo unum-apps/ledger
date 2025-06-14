@@ -18,6 +18,7 @@ import relations
 import relations_pymysql
 import relations_restx
 
+import unum_base
 import unum_ledger
 
 WHO = "ledger"
@@ -128,13 +129,17 @@ def build():
             app.unifist, schema=app.schema, autocommit=True, **json.loads(mysql_file.read())
         )
 
+    unum_source = unum_base.AppSource(app.logger, app.redis)
+
     if not unum_ledger.Unum.one(who="self").retrieve(False):
-        unum_ledger.Unum(who="self").create()
+        unum_source.journal_change("create", unum_ledger.Unum(who="self"))
 
-    if not unum_ledger.App.one(who=WHO).retrieve(False):
-        unum_ledger.App(who=WHO).create()
+    unum_app = unum_ledger.App.one(who=WHO).retrieve(False)
 
-    unum_ledger.App.one(who=WHO).set(meta=yaml.safe_load(META)).update()
+    if not unum_app:
+        unum_app = unum_source.journal_change("create", unum_ledger.App(who=WHO))
+
+    unum_source.journal_change("update", unum_app, {"meta": yaml.safe_load(META)})
 
     def ping():
         app.source.connection.ping(True)

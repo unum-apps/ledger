@@ -1,11 +1,17 @@
 import time
 import json
+import overscore
 import unum_ledger
 
 class Source:
     """
     Base Source class for Apps and Origins
     """
+
+    def __init__(self, logger, redis):
+
+        self.logger = logger
+        self.reds = redis
 
     def journal_change(
             self,
@@ -37,8 +43,16 @@ class Source:
 
             what["before"] = model.export()
 
-            for key in change:
-                model[key] = change[key]
+            for key, value in change.items():
+
+                path = overscore.parse(key)
+
+                current = model
+
+                for place in path[:-1]:
+                    current = current[place]
+
+                current[path[-1]] = value
 
             what["after"] = model.export()
 
@@ -64,6 +78,19 @@ class Source:
             return model
 
         return create
+
+    def create_act(self, **act):
+        """
+        Creates an act if needed
+        """
+
+        if not self.is_active(act["entity_id"]):
+            return
+
+        act = self.journal_change("create", unum_ledger.Act(**act))
+
+        self.logger.info("act", extra={"act": {"id": act.id}})
+        self.redis.xadd("ledger/act", fields={"act": json.dumps(act.export())})
 
     def decode_time(self, arg):
         """
@@ -157,6 +184,13 @@ class AsycSource(Source):
             what["before"] = model.export()
 
             for key in change:
+                path = overscore.parse(name)
+
+                for place in path:
+                    current = current[place]
+
+                return current
+
                 model[key] = change[key]
 
             what["after"] = model.export()

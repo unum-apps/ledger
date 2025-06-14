@@ -14,6 +14,7 @@ import relations_rest
 
 import prometheus_client
 
+import unum_base
 import unum_ledger
 
 PROCESS = prometheus_client.Gauge("process_seconds", "Time to complete a processing task")
@@ -24,7 +25,7 @@ ACTS = prometheus_client.Summary("acts_processed", "Acts processed")
 WHO = "ledger"
 NAME = f"{WHO}-daemon"
 
-class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attributes
+class Daemon(unum_base.Source, unum_base.AppSource): # pylint: disable=too-few-public-methods,too-many-instance-attributes
     """
     Daemon class
     """
@@ -57,151 +58,6 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         ):
             self.redis.xgroup_create("ledger/fact", self.group, mkstream=True)
 
-    def is_active(self, entity_id):
-        """
-        Checks to see if an enity has a Herald
-        """
-
-        return (
-            unum_ledger.Entity.one(
-                id=entity_id,
-                status="active"
-            ).retrieve(False) is not None
-            and
-            unum_ledger.Herald.one(
-                entity_id=entity_id,
-                app_id=self.app.id,
-                status="active"
-            ).retrieve(False) is not None
-        )
-
-    def journal_change(
-            self,
-            action,
-            model,
-            change=None
-        ):
-        """
-        Makes a change and journals it
-        """
-
-        create = True
-        who = f"{action}:{model.NAME}.{model.SOURCE}"
-        what = {
-            "action": action,
-            "app": model.SOURCE,
-            "block": model.NAME
-        }
-
-        if action == "create":
-
-            model = model.create()
-            what["after"] = model.export()
-
-        who += f":{model.id}"
-        what["id"] = model.id
-
-        if action == "update":
-
-            what["before"] = model.export()
-
-            for key in change:
-                model[key] = change[key]
-
-            what["after"] = model.export()
-
-            create = model.update()
-
-        elif action == "delete":
-
-            what["before"] = model.export()
-
-            create = model.delete()
-
-        if create:
-            journal = unum_ledger.Journal(
-                who=who,
-                what=what,
-                when=time.time()
-            ).create()
-
-            self.daemon.logger.info("journal", extra={"journal": {"id": journal.id}})
-            self.daemon.redis.xadd("ledger/journal", fields={"journal": json.dumps(journal.export())})
-
-        if action == "create":
-            return model
-
-        return create
-
-    def act(self, **act):
-        """
-        Creates an act if needed
-        """
-
-        if not self.is_active(act["entity_id"]):
-            return
-
-        act = self.journal_change("create", unum_ledger.Act(**act))
-
-        self.logger.info("act", extra={"act": {"id": act.id}})
-        ACTS.observe(1)
-        self.redis.xadd("ledger/act", fields={"act": json.dumps(act.export())})
-
-    def decode_time(self, arg):
-        """
-        Decodes 3d2h3m format to seconds
-
-        """
-
-        seconds = 0
-        current = ""
-
-        for letter in arg:
-
-            if '0' <= letter and letter <= '9':
-                current += letter
-            elif current and letter == 'd':
-                seconds += int(current) * 24*60*60
-                current = ""
-            elif current and letter == 'h':
-                seconds += int(current) * 60*60
-                current = ""
-            elif current and letter == 'm':
-                seconds += int(current) * 60
-                current = ""
-
-        return seconds
-
-    def encode_time(self, seconds):
-        """
-        Encodes seconds to 3d2h3m format
-        """
-
-        # Start with a blank string
-
-        arg = ""
-
-        # Determine and peel off the days, hours, and minutes
-
-        days = int(seconds/(24*60*60))
-        seconds -= days * 24*60*60
-        hours = int(seconds /(60*60))
-        seconds -= hours * 60*60
-        mins = int(seconds/(60))
-
-        # If there's a value, add it with its letter
-
-        if days:
-            arg += f"{days}d"
-
-        if hours:
-            arg += f"{hours}h"
-
-        if mins:
-            arg += f"{mins}m"
-
-        return arg
-
     def command_apps(self, instance):
         """
         Perform the apps
@@ -212,7 +68,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         for app in unum_ledger.App.many():
             text += f"\n- **{app.who}** - *{app.meta__description}* - {{channel:{app.meta__channel}}}"
 
-        self.act(
+        self.create_act(
             entity_id=instance["what"]["entity_id"],
             app_id=self.app.id,
             when=int(time.time()),
@@ -233,7 +89,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         for origin in unum_ledger.Origin.many():
             text += f"\n- **{origin.who}** - *{origin.meta__description}* - {{channel:{origin.meta__channel}}}"
 
-        self.act(
+        self.create_act(
             entity_id=instance["what"]["entity_id"],
             app_id=self.app.id,
             when=int(time.time()),
@@ -255,16 +111,19 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         base = "statement"
         meme = "*"
 
+        entity = unum_ledger.Entity.one(entity_id)
+
         if usage == "change":
             meme = "+"
             base = "reaction"
-            unum_ledger.Entity.one(entity_id).set(who=values["who"]).update()
 
-        who = unum_ledger.Entity.one(entity_id).who
+            self.journal_change("update", entity, {"who": values["who"]})
+
+        who = entity.who
 
         text = f"your name is {who}."
 
-        self.act(
+        self.create_act(
             entity_id=entity_id,
             app_id=self.app.id,
             when=int(time.time()),
@@ -283,7 +142,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
 
         entity_id = instance["what"]["entity_id"]
         values = instance["what"].get("values", {})
-        change = False
+        change = {}
         base = "statement"
         meme = "*"
 
@@ -292,26 +151,25 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         # Defaults
 
         if not entity.meta__talk:
-            entity.meta__talk = {
+            change["meta__talk"] = {
                 "after": self.decode_time("8h"),
                 "before": self.decode_time("20h"),
                 "kind": "public",
                 "noise": "loud"
             }
-            change = True
 
         # Updates
 
         if values:
-            entity.meta["talk"].update(values)
+            for key, value in values.items():
+                change[f"meta__talk__{key}"] = value
             base = "reaction"
             meme = "+"
-            change = True
 
         # Change if needed
 
         if change:
-            entity.update()
+            self.journal_change("update", entity, change=change)
 
         after = self.encode_time(entity.meta__talk__after)
         before = self.encode_time(entity.meta__talk__before)
@@ -320,7 +178,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
 
         text = f"I will {kind}ly ping and react {noise}ly to you after {after} and before {before} each day"
 
-        self.act(
+        self.create_act(
             entity_id=entity_id,
             app_id=self.app.id,
             when=int(time.time()),
