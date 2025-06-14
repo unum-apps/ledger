@@ -75,6 +75,64 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
             ).retrieve(False) is not None
         )
 
+    def journal_change(
+            self,
+            action,
+            model,
+            change=None
+        ):
+        """
+        Makes a change and journals it
+        """
+
+        create = True
+        who = f"{action}:{model.NAME}.{model.SOURCE}"
+        what = {
+            "action": action,
+            "app": model.SOURCE,
+            "block": model.NAME
+        }
+
+        if action == "create":
+
+            model = model.create()
+            what["after"] = model.export()
+
+        who += f":{model.id}"
+        what["id"] = model.id
+
+        if action == "update":
+
+            what["before"] = model.export()
+
+            for key in change:
+                model[key] = change[key]
+
+            what["after"] = model.export()
+
+            create = model.update()
+
+        elif action == "delete":
+
+            what["before"] = model.export()
+
+            create = model.delete()
+
+        if create:
+            journal = unum_ledger.Journal(
+                who=who,
+                what=what,
+                when=time.time()
+            ).create()
+
+            self.daemon.logger.info("journal", extra={"journal": {"id": journal.id}})
+            self.daemon.redis.xadd("ledger/journal", fields={"journal": json.dumps(journal.export())})
+
+        if action == "create":
+            return model
+
+        return create
+
     def act(self, **act):
         """
         Creates an act if needed
@@ -83,7 +141,7 @@ class Daemon: # pylint: disable=too-few-public-methods,too-many-instance-attribu
         if not self.is_active(act["entity_id"]):
             return
 
-        act = unum_ledger.Act(**act).create()
+        act = self.journal_change("create", unum_ledger.Act(**act))
 
         self.logger.info("act", extra={"act": {"id": act.id}})
         ACTS.observe(1)
