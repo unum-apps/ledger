@@ -11,7 +11,7 @@ class Source:
     def __init__(self, logger, redis):
 
         self.logger = logger
-        self.reds = redis
+        self.redis = redis
 
     def journal_change(
             self,
@@ -219,7 +219,7 @@ class AsycSource(Source):
         return create
 
 
-class OriginSource:
+class OriginSource(Source):
 
     def is_active(self, entity_id):
         """
@@ -240,7 +240,7 @@ class OriginSource:
         )
 
 
-class AppSource:
+class AppSource(Source):
 
     def is_active(self, entity_id):
         """
