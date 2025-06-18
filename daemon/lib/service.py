@@ -25,7 +25,7 @@ ACTS = prometheus_client.Summary("acts_processed", "Acts processed")
 WHO = "ledger"
 NAME = f"{WHO}-daemon"
 
-class Daemon(unum_base.Source, unum_base.AppSource): # pylint: disable=too-few-public-methods,too-many-instance-attributes
+class Daemon(unum_base.AppSource): # pylint: disable=too-few-public-methods,too-many-instance-attributes
     """
     Daemon class
     """

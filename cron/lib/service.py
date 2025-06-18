@@ -10,6 +10,7 @@ import redis
 import micro_logger
 import relations_rest
 
+import unum_base
 import unum_ledger
 
 import prometheus_client
@@ -19,7 +20,7 @@ REGISTRY = prometheus_client.CollectorRegistry()
 PROCESS = prometheus_client.Gauge("process_seconds", "Time to complete a processing task", registry=REGISTRY)
 ORIGINS = prometheus_client.Summary("origins_processed", "Origins processed", registry=REGISTRY)
 
-class Cron(unum_base.Source, unum_base.AppSource)): # pylint: disable=too-few-public-methods
+class Cron(unum_base.AppSource): # pylint: disable=too-few-public-methods
     """
     Cron class to run the processing
     """
