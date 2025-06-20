@@ -3,15 +3,33 @@ import json
 import overscore
 import unum_ledger
 
-class Source:
+class Service:
     """
-    Base Source class for Apps and Origins
+    Base Service class for Apps and Origins
     """
 
     def __init__(self, logger, redis):
 
         self.logger = logger
         self.redis = redis
+
+    def is_active(self, entity_id):
+        """
+        Checks to see if an enity is active
+        """
+
+        return (
+            unum_ledger.Entity.one(
+                id=entity_id,
+                status="active"
+            ).retrieve(False) is not None
+            and
+            unum_ledger.Narrator.one(
+                entity_id=entity_id,
+                service_id=self.service.id,
+                status="active"
+            ).retrieve(False) is not None
+        )
 
     def journal_change(
             self,
@@ -27,7 +45,7 @@ class Source:
         who = f"{action}:{model.NAME}.{model.SOURCE}"
         what = {
             "action": action,
-            "app": model.SOURCE,
+            "service": model.SOURCE,
             "block": model.NAME
         }
 
@@ -78,6 +96,37 @@ class Source:
             return model
 
         return create
+
+    def on_journal(self):
+        """
+        Listens for Journal Entries
+        """
+
+        message = self.redis.xreadgroup(self.group, self.group_id, {
+            "ledger/journal": ">"
+        }, count=1, block=500)
+
+        if not message:
+            return
+
+        if "journal" in message[0][1][0][1]:
+
+            instance = json.loads(message[0][1][0][1]["journal"])
+            self.logger.info("journal", extra={"journal": instance})
+
+            if (
+                self.is_active(instance["what"].get("entity_id")) and
+                not instance["what"].get("error") and
+                not instance["what"].get("errors")
+            ):
+
+                if (
+                    instance["what"].get("command") and
+                    self.service.who OK so in instance["what"].get("apps", [])
+                ):
+                    self.do_command(instance)
+
+            self.redis.xack("ledger/fact", self.group, message[0][1][0][0])
 
     def create_act(self, **act):
         """
@@ -147,8 +196,81 @@ class Source:
 
         return arg
 
+class AsycService(Service):
+    """
+    Base Service class for Asyc Apps and Origins
+    """
 
-class OriginSource(Source):
+    async def journal_change(
+            self,
+            action,
+            model,
+            change=None
+        ):
+        """
+        Makes a change and journals it
+        """
+
+        create = True
+        who = f"{action}:{model.NAME}.{model.SOURCE}"
+        what = {
+            "action": action,
+            "app": model.SOURCE,
+            "block": model.NAME
+        }
+
+        if action == "create":
+
+            model = model.create()
+            what["after"] = model.export()
+
+        who += f":{model.id}"
+        what["id"] = model.id
+
+        if action == "update":
+
+            what["before"] = model.export()
+
+            for key in change:
+                path = overscore.parse(name)
+
+                for place in path:
+                    current = current[place]
+
+                return current
+
+                model[key] = change[key]
+
+            what["after"] = model.export()
+
+            create = model.update()
+
+        elif action == "delete":
+
+            what["before"] = model.export()
+
+            create = model.delete()
+
+        if create:
+            journal = unum_ledger.Journal(
+                who=who,
+                what=what,
+                when=time.time()
+            ).create()
+
+            self.logger.info("journal", extra={"journal": {"id": journal.id}})
+            await self.redis.xadd("ledger/journal", fields={"journal": json.dumps(journal.export())})
+
+        if action == "create":
+            return model
+
+        return create
+
+
+
+class OriginService(Service):
+
+    KIND = "origin"
 
     def is_active(self, entity_id):
         """
@@ -169,7 +291,9 @@ class OriginSource(Source):
         )
 
 
-class AppSource(Source):
+class AppService(Service):
+
+    KIND = "app"
 
     def is_active(self, entity_id):
         """

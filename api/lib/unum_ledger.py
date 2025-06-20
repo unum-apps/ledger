@@ -132,6 +132,20 @@ class Award(Base):
 
 relations.OneToMany(Entity, Award)
 
+class Service(Base):
+    """
+    Any collection of Software we're using
+    """
+
+    id = int    # Internal id
+    who = str   # External id, how to identify
+    status = [  # Whether to use this one or not
+        "active",
+        "inactive"
+    ]
+    what = dict # payload of the entire Act from the App
+    meta = dict # any special weird data
+
 class App(Base):
     """
     App something like TehFeelz, PokeMeme and how to handle it
@@ -196,6 +210,26 @@ class Fact(Base):
 
 relations.OneToMany(Entity, Fact)
 relations.OneToMany(Origin, Fact)
+
+class Narrator(Base):
+    """
+    Narrator allows a Service to interact with an Entity
+    """
+
+    id = int
+    entity_id = int     # Entity
+    service_id = int    # Service
+    status = [          # Whether in use
+        "active",
+        "inactive"
+    ]
+    what = dict         # Generally what's allowed? Not really used yet.
+    meta = dict         # Specifically what's allowed? Not really used yet.
+
+    UNIQUE = ["entity_id", "service_id"]
+
+relations.OneToMany(Entity, Narrator)
+relations.OneToMany(Service, Narrator)
 
 class Witness(Base):
     """
