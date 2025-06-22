@@ -27,31 +27,35 @@ title: this Unum
 channel: unifist-unum
 description: Base for this Unum, tracks and records all that's allowed
 help: |
-  Welcome to this Unum. An Unum is a community Union born of American ideals: of the People, by the People,
-  and for the People. We make our own Rules. We build our Infrastructure. We forge our own Destiny.
+  Welcome to this Unum. An Unum is like a community union, a group of people commited to working together to help each other.
 
-  I am the Ledger App, the base of this Unum. I track Entities, what Apps and Origins are installed. Here you can
-  see all that and control how I talk to you, even what I'll call you.
+  I am the Ledger App, the base of this Unum. I track Entities, what Apps and Origins are installed. Here you can see all that and control how I talk to you, even what I'll call you.
 
-  I am designed for self service. By simply asking for help, I am aware of you and I have assigned you awards
-  to accomplish, mainly learning how to learn. Continue to ask for help, starting with help itself. Below shows how.
-
-  While I am aware of you, I am not tracking everything you say. You need to join for that. Good luck on learning
-  how.
+  While I am aware of you, I am not tracking everything you say. You need to join for that. Good luck on learning how.
 commands:
-- name: apps
-  meme: '?'
-  description: List all the installed Apps in this Unum
 - name: origins
   meme: '?'
   description: List all the installed Apps in this Unum
+  help: |
+    An Origin is software we wrote that listens and speaks to us through an outside application. For example, the Discord Origin allows us to listen in on a Discord server and sends messages from Apps to those Users.
+
+    Origins are more like mouthpieces than brains if that helps.
+- name: apps
+  meme: '?'
+  description: List all the installed Apps in this Unum
+  help: |
+    An App is software we wrote that interacts with us. For example, the Feelz App asks us how we're doing and records it.
+
+    Apps are very much like the brains of Unum.
 - name: name
   description: Manages your overall name in this Unum
+  help: |
+    The name I call you by can be controlled here. Totally up to you.
   examples:
   - meme: '?'
     description: See what you name is right now
   - meme: '!'
-    args: '- Cool Person'
+    args: Cool Person
     description: Set you name to Cool Person
   usages:
   - name: current
@@ -65,6 +69,26 @@ commands:
       format: remainder
 - name: talk
   description: Manage notifications in this Unum
+  help: |
+    I can interact with you a variety of ways and it's important you control how I do so.
+
+    I will only reach out to between certain times of the day. You determine how much time I should wait in the morning or when is too late at night. You set this right now by the amount of time from or before midnight.
+
+    When I respond to you, I can give you a whole message of what heppened, respond with an emoji, or only let you know if something went wrong.
+
+    I can also only reach out to you privately vs. in a channel. It's up to you.
+  examples:
+  - meme: '?'
+    description: See how I'm talking to you now
+  - meme: '!'
+    args: 10h 16h
+    description: Only let me reach out to you between 10am and 6pm
+  - meme: '!'
+    args: private
+    description: Only let me reach out to you via direct messages
+  - meme: '!'
+    args: calm
+    description: Only let me react to you with your name, no @
   usages:
   - name: range
     meme: '!'
@@ -94,7 +118,7 @@ commands:
       valids:
       - loud: I will react with comments with you @'d
       - calm: I will react with comments with your name only
-      - quiet: I will react with an eomji unless errors
+      - quiet: I will react with an emoji unless errors
       - silent: I will react only when errors
   - name: current
     meme: '?'
