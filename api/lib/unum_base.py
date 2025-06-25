@@ -8,11 +8,6 @@ class Source:
     Base Source class for Apps and Origins
     """
 
-    def __init__(self, logger, redis):
-
-        self.logger = logger
-        self.redis = redis
-
     def journal_change(
             self,
             action,

@@ -17,7 +17,7 @@ if not sys.warnoptions:
 class Testrestx(relations.unittest.TestCase):
 
     @unittest.mock.patch.dict('os.environ', {"LOG_LEVEL": "INFO"})
-    @unittest.mock.patch('service.open', new_callable=unittest.mock.mock_open, read_data='{"host": "%s", "user": "root", "password": "local"}' % os.environ["MYSQL_HOST"])
+    @unittest.mock.patch('service.open', new_callable=unittest.mock.mock_open, read_data='{"host": "%s", "user": "root", "password": ""}' % os.environ["MYSQL_HOST"])
     def setUp(self, mock_open):
 
         self.app = service.build()
@@ -41,7 +41,7 @@ class Testrestx(relations.unittest.TestCase):
 class TestAPI(Testrestx):
 
     @unittest.mock.patch.dict('os.environ', {"LOG_LEVEL": "INFO"})
-    @unittest.mock.patch('service.open', new_callable=unittest.mock.mock_open, read_data='{"host": "%s", "user": "root", "password": "local"}' % os.environ["MYSQL_HOST"])
+    @unittest.mock.patch('service.open', new_callable=unittest.mock.mock_open, read_data='{"host": "%s", "user": "root", "password": ""}' % os.environ["MYSQL_HOST"])
     def test_build(self, mock_open):
 
         app = service.build()

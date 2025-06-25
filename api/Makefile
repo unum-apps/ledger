@@ -3,7 +3,7 @@ IMAGE=unum-apps-ledger-api
 VERSION?=dev
 SEMVER=?=$(VERSION)
 NETWORK?=$(VERSION)-ledger.io
-MYSQL_IMAGE=mysql:8.0.28-oracle
+MYSQL_IMAGE=mysql/mysql-server:5.7
 MYSQL_HOST=$(IMAGE)-mysql
 DEBUG_PORT=14447
 TTY=$(shell if tty -s; then echo "-it"; fi)
@@ -35,7 +35,7 @@ network:
 
 mysql: network
 	-docker rm --force $(MYSQL_HOST)
-	docker run -d --network=$(NETWORK) -h $(MYSQL_HOST) --name=$(MYSQL_HOST) -e MYSQL_ROOT_PASSWORD='local' -e MYSQL_USER='root@%' $(MYSQL_IMAGE)
+	docker run -d --network=$(NETWORK) -h $(MYSQL_HOST) --name=$(MYSQL_HOST) -e MYSQL_ALLOW_EMPTY_PASSWORD='yes' -e MYSQL_ROOT_HOST='%' $(MYSQL_IMAGE)
 	docker run $(TTY) --rm --network=$(NETWORK) $(VOLUMES) $(ENVIRONMENT) $(ACCOUNT)/$(IMAGE):$(VERSION) sh -c "./mysql.sh"
 
 shell: mysql
