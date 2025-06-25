@@ -1,3 +1,9 @@
+"""
+Base classes for all Unum Apps and Origns
+"""
+
+# pylint: disable=no-member,no-self-use,misplaced-comparison-constant
+
 import time
 import json
 import overscore
@@ -98,7 +104,7 @@ class Source:
 
         for letter in arg:
 
-            if '0' <= letter and letter <= '9':
+            if '0' <= letter <= '9':
                 current += letter
             elif current and letter == 'd':
                 seconds += int(current) * 24*60*60
@@ -144,6 +150,9 @@ class Source:
 
 
 class OriginSource(Source):
+    """
+    Source for Origin
+    """
 
     def is_active(self, entity_id):
         """
@@ -165,6 +174,9 @@ class OriginSource(Source):
 
 
 class AppSource(Source):
+    """
+    Source for Origin
+    """
 
     def is_active(self, entity_id):
         """

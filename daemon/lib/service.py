@@ -218,7 +218,7 @@ class Daemon(unum_base.AppSource): # pylint: disable=too-few-public-methods,too-
 
         entity_id = instance["what"]["entity_id"]
         usage = instance["what"]["usage"]
-        values = instance["what"].get("values",{})
+        values = instance["what"].get("values", {})
         base = "statement"
         meme = "*"
 

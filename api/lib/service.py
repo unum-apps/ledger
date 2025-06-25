@@ -17,7 +17,6 @@ import relations
 import relations_pymysql
 import relations_restx
 
-import unum_base
 import unum_ledger
 
 WHO = "ledger"

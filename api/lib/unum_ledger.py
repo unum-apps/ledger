@@ -90,7 +90,7 @@ class Task(Base):
 
     id = int            # Internal id
     entity_id = int     # Entity this is directed to
-    who  = str          # External id, what's being worked on
+    who = str          # External id, what's being worked on
     status = [          # The status of the Task
         "blocked",
         "inprogress",
@@ -115,7 +115,7 @@ class Award(Base):
 
     id = int            # Internal id
     entity_id = int     # Entity this is directed to
-    who  = str          # External id, for reference
+    who = str          # External id, for reference
     status = [          # The status of the award
         "requested",
         "accepted",
