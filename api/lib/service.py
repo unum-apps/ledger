@@ -19,7 +19,8 @@ import relations_restx
 
 import unum_ledger
 
-NAME = "ledger-api"
+WHO = "ledger"
+NAME = f"{WHO}-api"
 
 metrics = prometheus_flask_exporter.PrometheusMetrics.for_app_factory()
 

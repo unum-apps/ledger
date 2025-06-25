@@ -11,7 +11,6 @@ import unum_ledger
 class MockRedis:
 
     host = None
-
     queue = None
 
     def __init__(self, host, **kwargs):
@@ -38,6 +37,11 @@ class MockRedis:
 
         if mkstream:
             self.queue[stream] = []
+
+    def xadd(self, stream, fields):
+
+        self.queue.setdefault(stream, [])
+        self.queue[stream].append({"fields": fields})
 
     def xreadgroup(self, group, consumer, streams, count=0, block=5000):
 
@@ -94,7 +98,7 @@ class TestDaemon(micro_logger_unittest.TestCase):
 
         self.assertEqual(daemon.name, "ledger-daemon")
         self.assertEqual(daemon.unifist, "ledger")
-        self.assertEqual(daemon.group, "daemon-ledger")
+        self.assertEqual(daemon.group, "ledger-daemon")
         self.assertEqual(daemon.group_id, "test")
 
         self.assertEqual(daemon.sleep, 7)
