@@ -84,15 +84,6 @@ CREATE TABLE IF NOT EXISTS `ledger`.`origin` (
   UNIQUE `who` (`who`)
 );
 
-CREATE TABLE IF NOT EXISTS `ledger`.`river` (
-  `id` BIGINT AUTO_INCREMENT,
-  `who` VARCHAR(255) NOT NULL,
-  `what` JSON NOT NULL,
-  `meta` JSON NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE `who` (`who`)
-);
-
 CREATE TABLE IF NOT EXISTS `ledger`.`scat` (
   `id` BIGINT AUTO_INCREMENT,
   `entity_id` BIGINT,
@@ -115,16 +106,6 @@ CREATE TABLE IF NOT EXISTS `ledger`.`task` (
   `meta` JSON NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `when` (`when`)
-);
-
-CREATE TABLE IF NOT EXISTS `ledger`.`twain` (
-  `id` BIGINT AUTO_INCREMENT,
-  `river_id` BIGINT,
-  `who` VARCHAR(255) NOT NULL,
-  `what` JSON NOT NULL,
-  `meta` JSON NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE `river_id_who` (`river_id`,`who`)
 );
 
 CREATE TABLE IF NOT EXISTS `ledger`.`unum` (

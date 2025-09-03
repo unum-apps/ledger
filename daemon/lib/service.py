@@ -2,7 +2,7 @@
 Module for the Daemon
 """
 
-# pylint: disable=no-self-use
+# pylint: disable=no-self-use,too-many-locals
 
 import os
 import time
@@ -126,6 +126,84 @@ commands:
   - name: current
     meme: '?'
     description: Show current comms
+- name: river
+  description: Manage Rivers in this Unum
+  help: |
+    This creates a river, which is like a stream, in an Unum.
+  examples:
+  - meme: '?'
+    description: List all current rivers
+  - meme: '!'
+    args: |
+      dude
+      ```yaml
+        select:
+        - text
+        - entity_id
+        where:
+          channel: unifist-unum
+      ```
+    description: Create a River for the ledger channel for person and text
+  usages:
+  - name: create
+    meme: '!'
+    description: Create a River named {who} with {what}
+    args:
+    - name: who
+      description: Name of the River
+    - name: what
+      description: The query for the River
+      format: remainder
+  - name: list
+    meme: '?'
+    description: List all Rivers
+- name: twain
+  description: Manage River Twains in this Unum
+  help: |
+    This creates a Twain, which is like a consumer, in an Unum.
+  examples:
+  - meme: '?'
+    description: List all current twains
+  - meme: '!'
+    args: dude sweet
+    description: Create a Twain for the ledger channel for person and text
+  usages:
+  - name: create
+    meme: '!'
+    description: Create a River named {who} with {what}
+    args:
+    - name: river
+      description: Name of the River
+    - name: twain
+      description: The Twain for the River
+  - name: list
+    meme: '?'
+    description: List all River Twains
+- name: mark
+  description: Read from River Twains in this Unum
+  help: |
+    This uses a Twain to get latest from a River
+  examples:
+  - meme: '!'
+    args: dude sweet
+    description: Get all the most recent from the sweet Twain from the dude River
+  - meme: '!'
+    args: dude sweet 5
+    description: Get the 5 most recents since last from the sweet Twain
+  usages:
+  - name: all
+    meme: '!'
+    description: Get all the most recents from the {river} River {twain} Twain
+    args:
+    - name: river
+    - name: twain
+  - name: some
+    meme: '!'
+    description: Get the {limit} most recents from the {river} River {twain} Twain
+    args:
+    - name: river
+    - name: twain
+    - name: limit
 """
 
 class Daemon(unum_base.AppSource): # pylint: disable=too-few-public-methods,too-many-instance-attributes
@@ -248,7 +326,7 @@ class Daemon(unum_base.AppSource): # pylint: disable=too-few-public-methods,too-
 
     def command_talk(self, instance):
         """
-        Joins the Unum, Ledger, and Discord Origin
+        Handles the communication
         """
 
         entity_id = instance["what"]["entity_id"]
@@ -301,6 +379,149 @@ class Daemon(unum_base.AppSource): # pylint: disable=too-few-public-methods,too-
             meta={"ancestor": instance["meta"]}
         )
 
+    def command_river(self, instance):
+        """
+        Managers Rivers
+        """
+
+        entity_id = instance["what"]["entity_id"]
+        usage = instance["what"]["usage"]
+        values = instance["what"].get("values", {})
+        base = "statement"
+        meme = "*"
+        text = ""
+
+        if usage == "list":
+
+            text = "Current rivers are:"
+
+            for river in unum_ledger.River.many():
+                text += f"\n- {river.who}"
+
+        elif usage == "create":
+
+            who = values["who"]
+            what = yaml.safe_load(values["what"].split("```yaml")[-1].split("```")[0])
+
+            river = self.journal_change("create", unum_ledger.River(who=who, what=what))
+
+            text = f"Created river: {who}"
+
+        self.create_act(
+            entity_id=entity_id,
+            app_id=self.app.id,
+            when=int(time.time()),
+            what={
+                "base": base,
+                "meme": meme,
+                "text": text
+            },
+            meta={"ancestor": instance["meta"]}
+        )
+
+    def command_twain(self, instance):
+        """
+        Managers Rivers
+        """
+
+        entity_id = instance["what"]["entity_id"]
+        usage = instance["what"]["usage"]
+        values = instance["what"].get("values", {})
+        base = "statement"
+        meme = "*"
+        text = ""
+
+        if usage == "list":
+
+            text = "Current twains are:"
+
+            for twain in unum_ledger.Twain.many():
+                text += f"\n- {twain.river.who} {twain.who}"
+
+        elif usage == "create":
+
+            river_who = values["river"]
+            twain_who = values["twain"]
+
+            river = unum_ledger.River.one(who=river_who).retrieve(False)
+
+            if not river:
+                text = f"River: {river_who} not found"
+            else:
+                twain = self.journal_change("create", unum_ledger.Twain(river_id=river.id, who=twain_who))
+                text = f"Created Twain: {river_who} {twain_who}"
+
+        self.create_act(
+            entity_id=entity_id,
+            app_id=self.app.id,
+            when=int(time.time()),
+            what={
+                "base": base,
+                "meme": meme,
+                "text": text
+            },
+            meta={"ancestor": instance["meta"]}
+        )
+
+    def command_mark(self, instance):
+        """
+        Managers Rivers
+        """
+
+        entity_id = instance["what"]["entity_id"]
+        usage = instance["what"]["usage"]
+        values = instance["what"].get("values", {})
+        base = "statement"
+        meme = "*"
+        text = ""
+        data = {}
+
+        river_who = values["river"]
+        twain_who = values["twain"]
+
+        twain = unum_ledger.Twain.one(river__who=river_who, who=twain_who).retrieve(False)
+
+        if not twain:
+            text = f"Twain {twain_who} not found"
+        elif not twain.river.what__select:
+            text = f"River {twain.river.who} select not found"
+        elif not twain.river.what__where:
+            text = f"River {twain.river.who} where not found"
+        else:
+
+            facts = unum_ledger.Fact.many(id__gt=twain.what__id or 0, **twain.river.what__where)
+
+            if usage == "some":
+                limit = values["limit"]
+                facts = facts.limit(limit)
+
+            marks = []
+
+            fact = None
+
+            for fact in facts:
+                mark = {}
+                for key, value in twain.river__what__select.items():
+                    mark[key] = fact[value]
+                marks.append(mark)
+            data["marks"] = marks
+
+            if fact:
+                self.journal_change("update", twain, {"what__id": fact.id})
+
+        self.create_act(
+            entity_id=entity_id,
+            app_id=self.app.id,
+            when=int(time.time()),
+            what={
+                "base": base,
+                "meme": meme,
+                "text": text,
+                "data": data
+            },
+            meta={"ancestor": instance["meta"]}
+        )
+
     def do_command(self, instance):
         """
         Perform the who
@@ -316,7 +537,12 @@ class Daemon(unum_base.AppSource): # pylint: disable=too-few-public-methods,too-
             self.command_name(instance)
         elif name == "talk":
             self.command_talk(instance)
-
+        elif name == "river":
+            self.command_river(instance)
+        elif name == "twain":
+            self.command_twain(instance)
+        elif name == "mark":
+            self.command_mark(instance)
 
     @PROCESS.time()
     def process(self):

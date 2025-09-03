@@ -437,47 +437,6 @@
             ]
         }
     },
-    "river": {
-        "fields": [
-            {
-                "auto": true,
-                "kind": "int",
-                "name": "id",
-                "none": true,
-                "store": "id"
-            },
-            {
-                "kind": "str",
-                "name": "who",
-                "none": false,
-                "store": "who"
-            },
-            {
-                "kind": "dict",
-                "name": "what",
-                "none": false,
-                "store": "what"
-            },
-            {
-                "kind": "dict",
-                "name": "meta",
-                "none": false,
-                "store": "meta"
-            }
-        ],
-        "id": "id",
-        "index": {},
-        "name": "river",
-        "schema": "ledger",
-        "source": "ledger",
-        "store": "river",
-        "title": "River",
-        "unique": {
-            "who": [
-                "who"
-            ]
-        }
-    },
     "scat": {
         "fields": [
             {
@@ -611,54 +570,6 @@
         "store": "task",
         "title": "Task",
         "unique": {}
-    },
-    "twain": {
-        "fields": [
-            {
-                "auto": true,
-                "kind": "int",
-                "name": "id",
-                "none": true,
-                "store": "id"
-            },
-            {
-                "kind": "int",
-                "name": "river_id",
-                "none": true,
-                "store": "river_id"
-            },
-            {
-                "kind": "str",
-                "name": "who",
-                "none": false,
-                "store": "who"
-            },
-            {
-                "kind": "dict",
-                "name": "what",
-                "none": false,
-                "store": "what"
-            },
-            {
-                "kind": "dict",
-                "name": "meta",
-                "none": false,
-                "store": "meta"
-            }
-        ],
-        "id": "id",
-        "index": {},
-        "name": "twain",
-        "schema": "ledger",
-        "source": "ledger",
-        "store": "twain",
-        "title": "Twain",
-        "unique": {
-            "river_id-who": [
-                "river_id",
-                "who"
-            ]
-        }
     },
     "unum": {
         "fields": [
