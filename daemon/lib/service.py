@@ -381,7 +381,7 @@ class Daemon(unum_base.AppSource): # pylint: disable=too-few-public-methods,too-
 
     def command_river(self, instance):
         """
-        Managers Rivers
+        Manages Rivers, a sectional stream of Facts
         """
 
         entity_id = instance["what"]["entity_id"]
@@ -421,7 +421,7 @@ class Daemon(unum_base.AppSource): # pylint: disable=too-few-public-methods,too-
 
     def command_twain(self, instance):
         """
-        Managers Rivers
+        Manages Twains, which indicate read positions on Rivers
         """
 
         entity_id = instance["what"]["entity_id"]
@@ -465,7 +465,7 @@ class Daemon(unum_base.AppSource): # pylint: disable=too-few-public-methods,too-
 
     def command_mark(self, instance):
         """
-        Managers Rivers
+        Reads a River using the Twain and updates the Twain
         """
 
         entity_id = instance["what"]["entity_id"]
