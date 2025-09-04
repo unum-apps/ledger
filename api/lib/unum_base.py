@@ -65,6 +65,10 @@ class Source:
 
             create = model.delete()
 
+        elif action != "create":
+
+            raise Exception(f"unknown action {action}")
+
         if create:
             journal = unum_ledger.Journal(
                 who=who,

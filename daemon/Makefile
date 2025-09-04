@@ -1,7 +1,7 @@
 ACCOUNT?=$(shell cat ../ACCOUNT)
 IMAGE=unum-apps-ledger-daemon
 VERSION?=dev
-SEMVER=?=$(VERSION)
+SEMVER?=$(VERSION)
 DEBUG_PORT=24447
 TTY=$(shell if tty -s; then echo "-it"; fi)
 VOLUMES=-v ${PWD}/lib/:/opt/service/lib/ \

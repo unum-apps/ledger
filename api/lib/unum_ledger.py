@@ -235,3 +235,26 @@ class Herald(Base):
 
 relations.OneToMany(Entity, Herald)
 relations.OneToMany(App, Herald)
+
+class River(Base):
+    """
+    River is stream of data from Facts
+    """
+
+    id = int
+    who = str       # External ID from originating system (e.g., Discord user ID, GitHub handle)
+    what = dict     # Generally what's allowed? Not really used yet.
+    meta = dict     # Specifically what's allowed? Not really used yet.
+
+class Twain(Base):
+    """
+    Twain is the current read position on a River
+    """
+
+    id = int
+    river_id = int  # River this is witnessing
+    who = str       # External ID from originating system (e.g., Discord user ID, GitHub handle)
+    what = dict     # Generally what's allowed? Not really used yet.
+    meta = dict     # Specifically what's allowed? Not really used yet.
+
+relations.OneToMany(River, Twain)
